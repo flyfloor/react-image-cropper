@@ -1,0 +1,70 @@
+._cropper {
+    .__absolute {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        cursor: cell;
+    }
+    ._modal {
+        .__absolute;
+        opacity: .4;
+        background-color: #222;
+    }
+    ._source {
+        overflow: hidden;
+        >img {
+            float: left;
+        }
+    }
+    ._clone {
+        .__absolute;
+        overflow: hidden;
+    }
+    ._frame {
+        .__absolute;
+        display: none;
+        cursor: move;
+        border: 1px dashed #88f;
+    }
+    ._dot {
+        width: 5px;
+        height: 5px;
+        position: absolute;
+        background: #88f;
+        display: block;
+        &._dot-nw, &._dot-w, &._dot-sw {
+            left: -3px;
+            cursor: w-resize;
+        }
+        &._dot-nw, &._dot-n, &._dot-nw {
+            top: -3px;
+            cursor: n-resize;
+        }
+
+        &._dot-sw, &._dot-s, &._dot-se {
+            bottom: -3px;
+            cursor: s-resize;
+        }
+
+        &._dot-ne, &._dot-e, &._dot-se {
+            right: -3px;
+            cursor: e-resize;
+        }
+        
+        &._dot-n, &._dot-s, &._dot-center {
+            left: 50%;
+            margin-left: -3px;
+        }
+
+        &._dot-e, &._dot-w, &._dot-center {
+            top: 50%;
+            margin-top: -3px;
+        }
+        &._dot-nw {cursor: nw-resize}
+        &._dot-ne {cursor: ne-resize}
+        &._dot-sw {cursor: sw-resize}
+        &._dot-se {cursor: se-resize}
+    }
+}

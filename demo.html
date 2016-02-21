@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>react image crop</title>
+</head>
+<body>
+    <img src="http://braavos.me/images/posts/college-rock/the-smiths.png" alt="" width="300" crossorigin="anonymous" id="img">
+    <div id="dist"></div>
+    <input type="file" id="file">
+    <ul id="list"></ul>
+    </canvas>
+    <script>
+        function readFile(event){
+            var files = event.target.files;
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i]
+                var reader = new FileReader();
+
+                reader.onload = (function(file){
+                    return function(e){
+                        var item = document.createElement('li')
+                        item.innerHTML = '<img src="'+ e.target.result +'" title="'+ escape(file.name) +'" />'
+                        document.getElementById('list').insertBefore(item, null);
+                    }
+                }(file))
+                reader.readAsDataURL(file)
+            }
+        }
+        document.getElementById('file').addEventListener('change', readFile)
+    </script>
+    <script>
+        window.onload = function(){
+            var canvas = document.createElement('canvas')
+            var img = document.getElementById('img')
+            canvas.getContext("2d").drawImage(img, 500,300, 200,100, 0,0,200,100)
+            document.getElementById('dist').innerHTML = '<img src="'+ canvas.toDataURL() +'" alt="" />'
+        }
+    </script>
+</body>
+</html>
