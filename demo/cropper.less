@@ -66,5 +66,25 @@
         &._dot-ne {cursor: ne-resize}
         &._dot-sw {cursor: sw-resize}
         &._dot-se {cursor: se-resize}
+        &._dot-center {
+            background-color: transparent;
+            .__content {
+                content: '';
+                position: absolute;
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+            &:before {
+                .__content;
+                border-top: 1px solid #fff;
+                top: 2px;
+            }
+            &:after {
+                .__content;
+                border-left: 1px solid #fff;
+                left: 2px;
+            }
+        }
     }
 }
