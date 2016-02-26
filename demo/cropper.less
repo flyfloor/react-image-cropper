@@ -1,4 +1,15 @@
 ._cropper {
+    &._dragging ._frame {
+        opacity: .8;
+    }
+    img {
+        user-drag: none; 
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-drag: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
     .__absolute {
         position: absolute;
         left: 0;
@@ -19,48 +30,71 @@
         }
     }
     ._clone {
-        .__absolute;
+        width: 100%;
+        height: 100%;
         overflow: hidden;
+        position: absolute;
+        left: 0;
+        top: 0;
     }
     ._frame {
         .__absolute;
         display: none;
-        cursor: move;
-        border: 1px dashed #88f;
+        >._move {
+            .__absolute;
+            cursor: move;
+            outline: 1px dashed #88f;
+            background-color: transparent;
+        }
     }
     ._dot {
-        width: 5px;
-        height: 5px;
-        position: absolute;
-        background: #88f;
-        display: block;
+        &:before {
+            content: '';
+            background: #88f;
+            display: block;
+            width: 5px;
+            height: 5px;
+            position: absolute;
+        }
         &._dot-nw, &._dot-w, &._dot-sw {
-            left: -3px;
-            cursor: w-resize;
+            &:before {
+                cursor: w-resize;
+                left: -3px;
+            }
         }
         &._dot-nw, &._dot-n, &._dot-nw {
-            top: -3px;
-            cursor: n-resize;
+            &:before {
+                top: -3px;
+                cursor: n-resize;
+            }
         }
 
         &._dot-sw, &._dot-s, &._dot-se {
-            bottom: -3px;
-            cursor: s-resize;
+            &:before {
+                bottom: -3px;
+                cursor: s-resize;
+            }
         }
 
         &._dot-ne, &._dot-e, &._dot-se {
-            right: -3px;
-            cursor: e-resize;
+            &:before {
+                right: -3px;
+                cursor: e-resize;
+            }
         }
         
         &._dot-n, &._dot-s, &._dot-center {
-            left: 50%;
-            margin-left: -3px;
+            &:before {
+                left: 50%;
+                margin-left: -3px;
+            }
         }
 
         &._dot-e, &._dot-w, &._dot-center {
-            top: 50%;
-            margin-top: -3px;
+            &:before {
+                top: 50%;
+                margin-top: -3px;
+            }
         }
         &._dot-nw {cursor: nw-resize}
         &._dot-ne {cursor: ne-resize}
@@ -68,22 +102,23 @@
         &._dot-se {cursor: se-resize}
         &._dot-center {
             background-color: transparent;
-            .__content {
-                content: '';
-                position: absolute;
-                display: block;
-                width: 100%;
-                height: 100%;
-            }
             &:before {
-                .__content;
-                border-top: 1px solid #fff;
-                top: 2px;
+                width: 5px;
+                height: 1px;
+                background-color: #fff;
+                top: 50%;
+                margin-top: 2px;
             }
             &:after {
-                .__content;
-                border-left: 1px solid #fff;
-                left: 2px;
+                .__absolute;
+                content: '';
+                top: 50%;
+                left: 50%;
+                margin-left: -1px;
+                height: 5px;
+                width: 1px;
+                background-color: #fff;
+                /*border-left: 1px solid #fff;*/
             }
         }
     }

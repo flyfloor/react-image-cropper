@@ -11,9 +11,17 @@ const Cropper = React.createClass({
         };
     },
     getInitialState() {
+        let { originX, originY } = this.props;
         return {
             img_width: '100%',
-            img_height: 'auto'
+            img_height: 'auto',
+            originX,
+            originY,
+            startX:0,
+            startY: 0,
+            dragging: false,
+            maxLeft: 0,
+            maxTop: 0,
         };
     },
 
@@ -23,24 +31,45 @@ const Cropper = React.createClass({
             img_width: container.offsetWidth
         }, () => {
             // calc frame width height
-            const {rate, width, originX, originY} = this.props;
+            let {rate, width, originX, originY} = this.props;
+            const {img_width, img_height} = this.state;
             const fr_width = width;
             const fr_height = width / rate;
+            const maxLeft = img_width - width;
+            const maxTop = img_height - fr_height;
+
+            this.setState({
+                maxLeft,
+                maxTop
+            });
+
+            if (originX + width >= img_width) {
+                originX = img_width - width;
+                this.setState({
+                    originX,
+                });
+            }
+            if (originY + fr_height >= img_height) {
+                originY = img_height - fr_height;
+                this.setState({
+                    originY
+                });
+            }
             // calc clone position
-            this.calcFrameSize(width, width / rate, originX, originY)
+            this.calcPosition(width, fr_height, originX, originY)
         });
     },
-    
-    calcFrameSize(width, height, left, top){
-        const {img_width, img_height} = this.state;
-        const cloneNode = ReactDOM.findDOMNode(this.refs.cloneNode)
+
+    calcPosition(width, height, left, top){
         const frameNode = ReactDOM.findDOMNode(this.refs.frameNode)
         const cloneImg = ReactDOM.findDOMNode(this.refs.cloneImg)
-        if (left + width >= img_width) left = img_width - width -1;
-        if (top + height >= img_height) top = img_height - height -1;
-        cloneNode.setAttribute('style', `left:${left}px;top:${top}px;width:${width}px;height:${height}px`)
+       
         frameNode.setAttribute('style', `display:block;left:${left}px;top:${top}px;width:${width}px;height:${height}px`)
-        cloneImg.setAttribute('style', `margin-left:-${left}px;margin-top:-${top}px`)
+        cloneImg.setAttribute('style', `margin-left:${-left}px;margin-top:${-top}px`)
+    },
+
+    computeStyles(left, top){
+
     },
 
     imgOnload(){
@@ -51,24 +80,56 @@ const Cropper = React.createClass({
     },
 
     handleDrag(e){
-        console.log(e.pageX)
+        let _x = e.pageX - this.state.startX;
+        let _y = e.pageY - this.state.startY;
+        const {width, rate} = this.props;
+        const {originX, originY} = this.state;
+        if (e.pageY !== 0 && e.pageX !== 0) {
+            this.inBoundCalc(width, width/rate, _x + originX, _y + originY)
+        }
+    },
+
+    inBoundCalc(width, height, left, top){
+        let {img_width, img_height, maxLeft, maxTop} = this.state;
+        if (left < 0) left = 0;
+        if (top < 0) top = 0;
+        if (left > maxLeft) left = maxLeft;
+        if (top > maxTop) top = maxTop;
+        this.calcPosition(width, height, left, top)
+    },
+
+    handleDragStart(e){
+        this.setState({
+            startX: e.pageX,
+            startY: e.pageY,
+            dragging: true,
+        });
+        // for firefox not fire drag other events
+        e.dataTransfer.setData('text/plain', '');
+    },
+
+    handleDragStop(e){
+        const frameNode = ReactDOM.findDOMNode(this.refs.frameNode)
+        let {offsetLeft, offsetTop} = frameNode;
+        this.setState({
+            originX: offsetLeft,
+            originY: offsetTop,
+            dragging: false
+        });
     },
 
     render() {
         return (
-            <div ref="container" className="_cropper" style={{'position': 'relative', 'height': this.state.img_height}}>
+            <div ref="container" className={this.state.dragging ? '_cropper _dragging' : '_cropper'} style={{'position': 'relative', 'height': this.state.img_height}}>
                 <div className="_source" ref="sourceNode">
                     <img src={this.props.src} ref='img' onLoad={this.imgOnload} width={this.state.img_width} height={this.state.img_height}/>
                 </div>
                 <div className="_modal"></div>
-                <div className="_clone" ref="cloneNode">
-                    <img src={this.props.src} ref="cloneImg" width={this.state.img_width}/>
-                </div>
                 <div className="_frame" ref="frameNode">
-                    <span className="_line-v"></span>
-                    <span className="_line-v"></span>
-                    <span className="_line"></span>
-                    <span className="_line"></span>
+                    <div className="_clone">
+                        <img src={this.props.src} ref="cloneImg" width={this.state.img_width}/>
+                    </div>
+                    <span className="_move" draggable onDrag={this.handleDrag} onDragStart={this.handleDragStart} onDragEnd={this.handleDragStop}></span>
                     <span className="_dot _dot-ne"></span>
                     <span className="_dot _dot-n"></span>
                     <span className="_dot _dot-nw"></span>
