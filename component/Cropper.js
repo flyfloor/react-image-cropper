@@ -39,8 +39,7 @@ const Cropper = React.createClass({
             const maxTop = img_height - fr_height;
 
             this.setState({
-                maxLeft,
-                maxTop
+                maxLeft, maxTop
             });
 
             if (originX + width >= img_width) {
@@ -80,12 +79,14 @@ const Cropper = React.createClass({
     },
 
     handleDrag(e){
-        let _x = e.pageX - this.state.startX;
-        let _y = e.pageY - this.state.startY;
-        const {width, rate} = this.props;
-        const {originX, originY} = this.state;
-        if (e.pageY !== 0 && e.pageX !== 0) {
-            this.inBoundCalc(width, width/rate, _x + originX, _y + originY)
+        if (this.state.dragging) {
+            const {originX, originY, startX, startY} = this.state;
+            let _x = e.pageX - startX;
+            let _y = e.pageY - startY;
+            const {width, rate} = this.props;
+            if (e.pageY !== 0 && e.pageX !== 0) {
+                this.inBoundCalc(width, width / rate, _x + originX, _y + originY)
+            }
         }
     },
 
@@ -104,8 +105,6 @@ const Cropper = React.createClass({
             startY: e.pageY,
             dragging: true,
         });
-        // for firefox not fire drag other events
-        e.dataTransfer.setData('text/plain', '');
     },
 
     handleDragStop(e){
@@ -116,6 +115,29 @@ const Cropper = React.createClass({
             originY: offsetTop,
             dragging: false
         });
+    },
+
+    handleDotDrag(dir,e){
+        const {width, rate} = this.props;
+        const {pageX, pageY} = e;
+        const {startX, startY, originX, originY} = this.state;
+
+        if (pageY !== 0 && pageX !== 0) {
+            let _x = pageX - startX;
+            let _y = pageY - startY;
+            switch(dir){
+                case 'ne':
+                    if ( _y == 0 ||  Math.abs(_x / _y) >= rate){
+                        let new_width = width + _x;
+                        return this.inBoundCalc(new_width, new_width / rate, originX, originY - _x / rate )
+                    }
+                    let new_height = width / rate - _y;
+                    return this.inBoundCalc(new_height * rate, new_height, originX, originY + new_height - width / rate)
+                default:
+                    return
+            }
+        }
+
     },
 
     render() {
@@ -129,7 +151,7 @@ const Cropper = React.createClass({
                     <div className="_clone">
                         <img src={this.props.src} ref="cloneImg" width={this.state.img_width}/>
                     </div>
-                    <span className="_move" draggable onDrag={this.handleDrag} onDragStart={this.handleDragStart} onDragEnd={this.handleDragStop}></span>
+                    <span className="_move" onMouseMove={this.handleDrag} onMouseDown={this.handleDragStart} onMouseUp={this.handleDragStop}></span>
                     <span className="_dot _dot-ne"></span>
                     <span className="_dot _dot-n"></span>
                     <span className="_dot _dot-nw"></span>
