@@ -1,9 +1,4 @@
-## React boilerplate
+## Image Cropper built with React
 
-this is a boilerplate for React project 
+a image cropper, use React.js
 
-### run
-
-npm start
-
-babel --presets es2015,react --watch component/ --out-dir lib/
