@@ -16,7 +16,6 @@
         top: 0;
         bottom: 0;
         right: 0;
-        cursor: cell;
     }
     ._modal {
         .__absolute;
@@ -57,29 +56,29 @@
             position: absolute;
         }
         &._dot-nw, &._dot-w, &._dot-sw {
+            cursor: w-resize;
             &:before {
-                cursor: w-resize;
                 left: -3px;
             }
         }
-        &._dot-nw, &._dot-n, &._dot-nw {
+        &._dot-nw, &._dot-n, &._dot-ne {
+            cursor: n-resize;
             &:before {
                 top: -3px;
-                cursor: n-resize;
             }
         }
 
         &._dot-sw, &._dot-s, &._dot-se {
+            cursor: s-resize;
             &:before {
                 bottom: -3px;
-                cursor: s-resize;
             }
         }
 
         &._dot-ne, &._dot-e, &._dot-se {
+            cursor: e-resize;
             &:before {
                 right: -3px;
-                cursor: e-resize;
             }
         }
         
@@ -96,10 +95,18 @@
                 margin-top: -3px;
             }
         }
-        &._dot-nw:before {cursor: nw-resize}
-        &._dot-ne:before {cursor: ne-resize}
-        &._dot-sw:before {cursor: sw-resize}
-        &._dot-se:before {cursor: se-resize}
+        &._dot-nw {
+            cursor: nw-resize
+        }
+        &._dot-ne {
+            cursor: ne-resize
+        }
+        &._dot-sw {
+            cursor: sw-resize
+        }
+        &._dot-se {
+            cursor: se-resize
+        }
         &._dot-center {
             background-color: transparent;
             &:before {
@@ -118,7 +125,6 @@
                 height: 5px;
                 width: 1px;
                 background-color: #fff;
-                /*border-left: 1px solid #fff;*/
             }
         }
     }

@@ -34,7 +34,7 @@
         window.onload = function(){
             var canvas = document.createElement('canvas')
             var img = document.getElementById('img')
-            canvas.getContext("2d").drawImage(img, 500,300, 200,100, 0,0,200,100)
+            canvas.getContext("2d").drawImage(img, 500,300, 200,200, 0,0,200,200)
             document.getElementById('dist').innerHTML = '<img src="'+ canvas.toDataURL() +'" alt="" />'
         }
     </script>
