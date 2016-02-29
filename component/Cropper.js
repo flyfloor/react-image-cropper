@@ -95,10 +95,14 @@ const Cropper = React.createClass({
             const {frameWidth, startX, startY, offsetLeft, offsetTop} = this.state;
 
             let _x = pageX - startX;
+            let _y = pageY - startY;
+            let _width, _height, _left, _top;
             if (_x > 0) {
+                if(_y < 0) return this.calcPosition(frameWidth + _x, (frameWidth + _x) / rate, offsetLeft, offsetTop - _x / rate)
                 return this.calcPosition(frameWidth + _x, (frameWidth + _x) / rate, offsetLeft, offsetTop)
             }
-            return this.calcPosition(frameWidth - _x, (frameWidth - _x) / rate,  offsetLeft + _x, offsetTop + _x * rate)
+            if (_y > 0) return this.calcPosition(frameWidth - _x, (frameWidth - _x) / rate,  offsetLeft + _x, offsetTop)
+            return this.calcPosition(frameWidth - _x, (frameWidth - _x) / rate,  offsetLeft + _x, offsetTop + _x / rate)
         }
     },
 
