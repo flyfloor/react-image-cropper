@@ -1,4 +1,4 @@
-## Image Cropper built with React
+## React Image Cropper
 
-a image cropper, use React.js
+A image cropper, use React.js
 
