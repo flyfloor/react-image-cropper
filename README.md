@@ -31,5 +31,5 @@ Custom:
 | originX | cropper original position(x axis)|
 | originY | cropper original position(Y axis)|
 
-[See the demo](http://braavos.me/react-image-crop/)
+[See the demo](http://braavos.me/react-image-cropper/)
 
