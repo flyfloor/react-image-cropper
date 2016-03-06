@@ -1,5 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+const React = require('react');
+const ReactDOM = require('react-dom');
 
 const Cropper = React.createClass({
     getDefaultProps() {
@@ -259,4 +259,4 @@ Cropper.propTypes = {
     width: React.PropTypes.number,
 }
 
-export default Cropper
+module.exports = Cropper
