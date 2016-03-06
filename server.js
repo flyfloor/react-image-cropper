@@ -13,10 +13,6 @@ app.use(webpackHotMiddleware(compiler))
 
 app.use(express.static('dist'));
 
-app.get("/demo", function(req, res) {
-  res.sendFile(__dirname + '/demo.html')
-})
-
 app.get("/", function(req, res) {
   res.sendFile(__dirname + '/index.html')
 })
