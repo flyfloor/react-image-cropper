@@ -72,8 +72,9 @@ const Cropper = React.createClass({
 
         if (left < 0) left = 0;
         if (top < 0) top = 0;
-        if (width + left > img_width) width = img_width;
-        if (height + top > img_height || width < 0 || height < 0) return false;
+        if (width + left > img_width) left = img_width - width;
+        if (height + top > img_height) top = img_height - height;
+        if (width < 0 || height < 0 || height > img_height) return false;
 
         if (this.props.onCrop) this.props.onCrop(this.props.src, {left, top, width, height})
        
