@@ -2,6 +2,13 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 
 const Cropper = React.createClass({
+    PropTypes: {
+        src: React.PropTypes.string.isRequired,
+        originX: React.PropTypes.number,
+        originY: React.PropTypes.number,
+        rate: React.PropTypes.number,
+        width: React.PropTypes.number,
+    },
     getDefaultProps() {
         return {
             width: 200,
@@ -251,13 +258,5 @@ const Cropper = React.createClass({
         );
     }
 });
-
-Cropper.propTypes = {
-    src: React.PropTypes.string.isRequired,
-    originX: React.PropTypes.number,
-    originY: React.PropTypes.number,
-    rate: React.PropTypes.number,
-    width: React.PropTypes.number,
-}
 
 module.exports = Cropper
