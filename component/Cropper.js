@@ -69,13 +69,29 @@ const Cropper = React.createClass({
         const frameNode = ReactDOM.findDOMNode(this.refs.frameNode)
         const cloneImg = ReactDOM.findDOMNode(this.refs.cloneImg)
         const {img_width, img_height} = this.state;
-        const {onCrop, src, disabled} = this.props;
-
+        const {onCrop, src, disabled, rate} = this.props;
+        
+        console.log(width, left, top, height, img_width, img_height);
+        if (width < 0 || height < 0) return false;
         if (left < 0) left = 0;
         if (top < 0) top = 0;
         if (width + left > img_width) left = img_width - width;
         if (height + top > img_height) top = img_height - height;
-        if (width < 0 || height < 0 || height > img_height) return false;
+
+        // width / height > img_width /img_height
+        if (width / img_width > height / img_height) {
+            if (width > img_width) {
+                width = img_width;
+                left = 0;
+                height = width / rate;
+            }
+        } else {
+            if (height > img_height) {
+                height = img_height;
+                top = 0;
+                width = height * rate;
+            }
+        }
 
         if (onCrop && !disabled) onCrop(src, {left, top, width, height});
        
@@ -92,13 +108,13 @@ const Cropper = React.createClass({
 
     createNewFrame(e){
         if (this.state.dragging) {
-            let {pageX, pageY} = e;
+            const {pageX, pageY} = e;
             const {rate} = this.props;
             const {frameWidth, startX, startY, offsetLeft, offsetTop} = this.state;
 
-            let _x = pageX - startX;
-            let _y = pageY - startY;
-            let _width, _height, _left, _top;
+            const _x = pageX - startX;
+            const _y = pageY - startY;
+
             if (_x > 0) {
                 if(_y < 0) return this.calcPosition(frameWidth + _x, (frameWidth + _x) / rate, offsetLeft, offsetTop - _x / rate)
                 return this.calcPosition(frameWidth + _x, (frameWidth + _x) / rate, offsetLeft, offsetTop)
@@ -128,8 +144,8 @@ const Cropper = React.createClass({
     },
 
     handleDragStart(e){
-        let action = e.target.getAttribute('data-action');
-        let {pageX, pageY} = e;
+        const action = e.target.getAttribute('data-action');
+        const {pageX, pageY} = e;
         this.setState({
             startX: pageX,
             startY: pageY,
@@ -179,31 +195,32 @@ const Cropper = React.createClass({
         const {startX, startY, originX, originY, frameWidth, frameHeight} = this.state;
 
         if (pageY !== 0 && pageX !== 0) {
-            let _x = pageX - startX;
-            let _y = pageY - startY;
+            const _x = pageX - startX;
+            const _y = pageY - startY;
             let new_width = frameWidth + _x;
+            let new_height = new_width;
             switch(dir){
                 case 'ne':
-                    return this.calcPosition(new_width, new_width/rate, originX, originY - _x / rate)
+                    return this.calcPosition(new_width, new_width/rate, originX, originY - _x / rate);
                 case 'e':
-                    return this.calcPosition(new_width, new_width/rate, originX, originY - _x / rate * .5)
+                    return this.calcPosition(new_width, new_width/rate, originX, originY - _x / rate * 0.5);
                 case 'se':
-                    return this.calcPosition(new_width, new_width/rate, originX, originY)
+                    return this.calcPosition(new_width, new_width/rate, originX, originY);
                 case 'n':
-                    let new_height = frameHeight - _y;
-                    return this.calcPosition(new_height * rate, new_height, originX + _y * rate * .5, originY + _y)
+                    new_height = frameHeight - _y;
+                    return this.calcPosition(new_height * rate, new_height, originX + _y * rate * 0.5, originY + _y);
                 case 'nw':
                     new_width = frameWidth - _x;
-                    return this.calcPosition(new_width, new_width/rate, originX + _x, originY + _x / rate)
+                    return this.calcPosition(new_width, new_width/rate, originX + _x, originY + _x / rate);
                 case 'w':
                     new_width = frameWidth - _x;
-                    return this.calcPosition(new_width, new_width / rate, originX + _x, originY + _x / rate * .5)
+                    return this.calcPosition(new_width, new_width / rate, originX + _x, originY + _x / rate * 0.5);
                 case 'sw':
                     new_width = frameWidth - _x;
-                    return this.calcPosition(new_width, new_width / rate, originX + _x, originY)
+                    return this.calcPosition(new_width, new_width / rate, originX + _x, originY);
                 case 's':
                     new_height = frameHeight + _y;
-                    return this.calcPosition(new_height * rate, new_height, originX - _y * rate * .5, originY)
+                    return this.calcPosition(new_height * rate, new_height, originX - _y * rate * 0.5, originY);
                 default:
                     return
             }
