@@ -2,7 +2,7 @@
 
 var Cropper = require('./lib/Cropper');
 
-module.export = {
+module.exports = {
     Cropper: Cropper
-}
+};
 
