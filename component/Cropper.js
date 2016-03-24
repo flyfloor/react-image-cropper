@@ -8,6 +8,7 @@ const Cropper = React.createClass({
         originY: React.PropTypes.number,
         rate: React.PropTypes.number,
         width: React.PropTypes.number,
+        disabled: React.PropTypes.bool,
     },
     getDefaultProps() {
         return {
@@ -42,30 +43,22 @@ const Cropper = React.createClass({
             img_width: container.offsetWidth
         }, () => {
             // calc frame width height
-            let {originX, originY} = this.props;
+            let {originX, originY, disabled} = this.props;
+            if (disabled) return;
             const {img_width, img_height, frameWidth, frameHeight} = this.state;
             const maxLeft = img_width - frameWidth;
             const maxTop = img_height - frameHeight;
 
-
             if (originX + frameWidth >= img_width) {
                 originX = img_width - frameWidth;
-                this.setState({
-                    originX,
-                });
+                this.setState({ originX });
             }
             if (originY + frameHeight >= img_height) {
                 originY = img_height - frameHeight;
-                this.setState({
-                    originY
-                });
+                this.setState({ originY });
             }
 
-            this.setState({  
-                maxLeft, 
-                maxTop, 
-                imgLoaded: true 
-            });
+            this.setState({ maxLeft, maxTop, imgLoaded: true });
             // calc clone position
             this.calcPosition(frameWidth, frameHeight, originX, originY)
 
@@ -76,6 +69,7 @@ const Cropper = React.createClass({
         const frameNode = ReactDOM.findDOMNode(this.refs.frameNode)
         const cloneImg = ReactDOM.findDOMNode(this.refs.cloneImg)
         const {img_width, img_height} = this.state;
+        const {onCrop, src, disabled} = this.props;
 
         if (left < 0) left = 0;
         if (top < 0) top = 0;
@@ -83,7 +77,7 @@ const Cropper = React.createClass({
         if (height + top > img_height) top = img_height - height;
         if (width < 0 || height < 0 || height > img_height) return false;
 
-        if (this.props.onCrop) this.props.onCrop(this.props.src, {left, top, width, height})
+        if (onCrop && !disabled) onCrop(src, {left, top, width, height});
        
         frameNode.setAttribute('style', `display:block;left:${left}px;top:${top}px;width:${width}px;height:${height}px`)
         cloneImg.setAttribute('style', `margin-left:${-left}px;margin-top:${-top}px`)
@@ -227,34 +221,49 @@ const Cropper = React.createClass({
     },
 
     render() {
-        let className = '_cropper';
-        if (this.state.imgLoaded) className += ' _loaded';
-        if (this.state.dragging) className = `${className} _dragging`;
-        return (
-            <div className={className} onMouseLeave={this.handleDragStop}
-                 ref="container" onMouseMove={this.handleDrag} 
-                 onMouseDown={this.handleDragStart} onMouseUp={this.handleDragStop}
-                style={{'position': 'relative', 'height': this.state.img_height}}>
-                <div className="_source" ref="sourceNode">
-                    <img src={this.props.src} crossOrigin ref='img' onLoad={this.imgOnload} width={this.state.img_width} height={this.state.img_height}/>
+        let className = ['_cropper'];
+        const {imgLoaded, dragging, img_height, img_width} = this.state;
+        const {src, disabled} = this.props;
+
+        if (imgLoaded) className.push('_loaded');
+        if (dragging) className.push('_dragging');
+        className = className.join(' ');
+        if (disabled) className = '_cropper _disabled';
+        const imageNode =  <div className="_source" ref="sourceNode">
+                                <img src={src} crossOrigin ref='img' onLoad={this.imgOnload} 
+                                width={img_width} height={img_height}/>
+                            </div>;
+
+        const node = disabled ?
+                <div className={className} ref='container' style={{'position': 'relative', 'height': img_height}}>
+                    {imageNode}
+                    <div className="_modal"></div>
                 </div>
-                <div className="_modal"></div>
-                <div className="_frame" ref="frameNode">
-                    <div className="_clone">
-                        <img src={this.props.src} crossOrigin ref="cloneImg" width={this.state.img_width}/>
+                : <div className={className} onMouseLeave={this.handleDragStop}
+                     ref="container" onMouseMove={this.handleDrag} 
+                     onMouseDown={this.handleDragStart} onMouseUp={this.handleDragStop}
+                    style={{'position': 'relative', 'height': img_height}}>
+                    {imageNode}
+                    <div className="_modal"></div>
+                    <div className="_frame" ref="frameNode">
+                        <div className="_clone">
+                            <img src={src} crossOrigin ref="cloneImg" width={img_width}/>
+                        </div>
+                        <span className="_move" data-action='move'></span>
+                        <span className="_dot _dot-center" data-action="ne"></span>
+                        <span className="_dot _dot-ne" data-action="ne"></span>
+                        <span className="_dot _dot-n" data-action="n"></span>
+                        <span className="_dot _dot-nw" data-action="nw"></span>
+                        <span className="_dot _dot-e" data-action="e"></span>
+                        <span className="_dot _dot-w" data-action="w"></span>
+                        <span className="_dot _dot-se" data-action="se"></span>
+                        <span className="_dot _dot-s" data-action="s"></span>
+                        <span className="_dot _dot-sw" data-action="sw"></span>
                     </div>
-                    <span className="_move" data-action='move'></span>
-                    <span className="_dot _dot-center" data-action="ne"></span>
-                    <span className="_dot _dot-ne" data-action="ne"></span>
-                    <span className="_dot _dot-n" data-action="n"></span>
-                    <span className="_dot _dot-nw" data-action="nw"></span>
-                    <span className="_dot _dot-e" data-action="e"></span>
-                    <span className="_dot _dot-w" data-action="w"></span>
-                    <span className="_dot _dot-se" data-action="se"></span>
-                    <span className="_dot _dot-s" data-action="s"></span>
-                    <span className="_dot _dot-sw" data-action="sw"></span>
-                </div>
-            </div>
+                </div>;
+
+        return (
+            node
         );
     }
 });

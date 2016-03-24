@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "bdd55ad8c394140ec644"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "b5c50c335970c042a1b6"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -591,7 +591,8 @@
 	        return {
 	            image: '',
 	            image1: '',
-	            image2: ''
+	            image2: '',
+	            image3: ''
 	        };
 	    },
 
@@ -648,51 +649,36 @@
 	                _react2['default'].createElement(
 	                    'h3',
 	                    null,
-	                    'With given origin X and Y'
+	                    'Disabled'
 	                ),
-	                _react2['default'].createElement(_componentCropper2['default'], { src: src, originX: 100, originY: 100, ref: 'image1' }),
+	                _react2['default'].createElement(_componentCropper2['default'], { src: src, ref: 'image3', disabled: true }),
 	                _react2['default'].createElement(
 	                    'button',
 	                    { onClick: function () {
-	                            return _this.OnClick('image1');
+	                            return _this.OnClick('image3');
 	                        } },
 	                    'crop'
-	                ),
-	                _react2['default'].createElement(
-	                    'h4',
-	                    null,
-	                    'after crop'
-	                ),
-	                this.state.image1 ? _react2['default'].createElement('img', { width: '200', src: this.state.image1, alt: '' }) : null
-	            ),
-	            _react2['default'].createElement(
-	                'li',
-	                null,
-	                _react2['default'].createElement(
-	                    'h3',
-	                    null,
-	                    'With given rate'
-	                ),
-	                _react2['default'].createElement(_componentCropper2['default'], { src: src, rate: 2, ref: 'image2' }),
-	                _react2['default'].createElement(
-	                    'button',
-	                    { onClick: function () {
-	                            return _this.OnClick('image2');
-	                        } },
-	                    'crop'
-	                ),
-	                _react2['default'].createElement(
-	                    'h4',
-	                    null,
-	                    'after crop'
-	                ),
-	                this.state.image2 ? _react2['default'].createElement('img', { width: '200', src: this.state.image2, alt: '' }) : null
+	                )
 	            )
 	        );
 	    }
 	});
 
 	_reactDom2['default'].render(_react2['default'].createElement(ImageCropDemo, null), document.getElementById('root'));
+	/*<li>
+	   <h3>With given origin X and Y</h3>
+	   <Cropper src={src} originX={100} originY={100} ref="image1"/>
+	   <button onClick={() => this.OnClick('image1')}>crop</button>
+	   <h4>after crop</h4>
+	   {this.state.image1 ? <img width="200" src={this.state.image1} alt=""/>: null}
+	</li>
+	<li>
+	   <h3>With given rate</h3>
+	   <Cropper src={src} rate={2} ref="image2"/>
+	   <button onClick={() => this.OnClick('image2')}>crop</button>
+	   <h4>after crop</h4>
+	   {this.state.image2 ? <img width="200" src={this.state.image2} alt=""/>: null}
+	</li>*/
 
 /***/ },
 /* 1 */
@@ -5130,7 +5116,7 @@
 
 
 	// module
-	exports.push([module.id, "._cropper._dragging ._frame {\n  opacity: .8;\n}\n._cropper img {\n  user-drag: none;\n  user-select: none;\n  -moz-user-select: none;\n  -webkit-user-drag: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n}\n._cropper .__absolute {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n}\n._cropper ._modal {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  opacity: .4;\n  background-color: #222;\n}\n._cropper ._source {\n  overflow: hidden;\n}\n._cropper ._source > img {\n  float: left;\n}\n._cropper ._clone {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n._cropper ._frame {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  display: none;\n}\n._cropper ._frame > ._move {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  cursor: move;\n  outline: 1px dashed #88f;\n  background-color: transparent;\n}\n._cropper ._dot:before {\n  content: '';\n  background: #88f;\n  display: block;\n  width: 5px;\n  height: 5px;\n  position: absolute;\n}\n._cropper ._dot._dot-nw,\n._cropper ._dot._dot-w,\n._cropper ._dot._dot-sw {\n  cursor: w-resize;\n}\n._cropper ._dot._dot-nw:before,\n._cropper ._dot._dot-w:before,\n._cropper ._dot._dot-sw:before {\n  left: -3px;\n}\n._cropper ._dot._dot-nw,\n._cropper ._dot._dot-n,\n._cropper ._dot._dot-ne {\n  cursor: n-resize;\n}\n._cropper ._dot._dot-nw:before,\n._cropper ._dot._dot-n:before,\n._cropper ._dot._dot-ne:before {\n  top: -3px;\n}\n._cropper ._dot._dot-sw,\n._cropper ._dot._dot-s,\n._cropper ._dot._dot-se {\n  cursor: s-resize;\n}\n._cropper ._dot._dot-sw:before,\n._cropper ._dot._dot-s:before,\n._cropper ._dot._dot-se:before {\n  bottom: -3px;\n}\n._cropper ._dot._dot-ne,\n._cropper ._dot._dot-e,\n._cropper ._dot._dot-se {\n  cursor: e-resize;\n}\n._cropper ._dot._dot-ne:before,\n._cropper ._dot._dot-e:before,\n._cropper ._dot._dot-se:before {\n  right: -3px;\n}\n._cropper ._dot._dot-n:before,\n._cropper ._dot._dot-s:before,\n._cropper ._dot._dot-center:before {\n  left: 50%;\n  margin-left: -3px;\n}\n._cropper ._dot._dot-e:before,\n._cropper ._dot._dot-w:before,\n._cropper ._dot._dot-center:before {\n  top: 50%;\n  margin-top: -3px;\n}\n._cropper ._dot._dot-nw {\n  cursor: nw-resize;\n}\n._cropper ._dot._dot-ne {\n  cursor: ne-resize;\n}\n._cropper ._dot._dot-sw {\n  cursor: sw-resize;\n}\n._cropper ._dot._dot-se {\n  cursor: se-resize;\n}\n._cropper ._dot._dot-center {\n  background-color: transparent;\n}\n._cropper ._dot._dot-center:before {\n  width: 5px;\n  height: 1px;\n  background-color: #fff;\n  top: 50%;\n  margin-top: 2px;\n}\n._cropper ._dot._dot-center:after {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  content: '';\n  top: 50%;\n  left: 50%;\n  margin-left: -1px;\n  height: 5px;\n  width: 1px;\n  background-color: #fff;\n}\n.container {\n  width: 800px;\n  margin: 0 auto;\n}\n", ""]);
+	exports.push([module.id, "._cropper._disabled ._modal {\n  background: #666;\n  opacity: .7;\n  cursor: not-allowed;\n}\n._cropper._dragging ._frame {\n  opacity: .8;\n}\n._cropper img {\n  user-drag: none;\n  user-select: none;\n  -moz-user-select: none;\n  -webkit-user-drag: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n}\n._cropper .__absolute {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n}\n._cropper ._modal {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  opacity: .4;\n  background-color: #222;\n}\n._cropper ._source {\n  overflow: hidden;\n}\n._cropper ._source > img {\n  float: left;\n}\n._cropper ._clone {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n._cropper ._frame {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  display: none;\n}\n._cropper ._frame > ._move {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  cursor: move;\n  outline: 1px dashed #88f;\n  background-color: transparent;\n}\n._cropper ._dot:before {\n  content: '';\n  background: #88f;\n  display: block;\n  width: 5px;\n  height: 5px;\n  position: absolute;\n}\n._cropper ._dot._dot-nw,\n._cropper ._dot._dot-w,\n._cropper ._dot._dot-sw {\n  cursor: w-resize;\n}\n._cropper ._dot._dot-nw:before,\n._cropper ._dot._dot-w:before,\n._cropper ._dot._dot-sw:before {\n  left: -3px;\n}\n._cropper ._dot._dot-nw,\n._cropper ._dot._dot-n,\n._cropper ._dot._dot-ne {\n  cursor: n-resize;\n}\n._cropper ._dot._dot-nw:before,\n._cropper ._dot._dot-n:before,\n._cropper ._dot._dot-ne:before {\n  top: -3px;\n}\n._cropper ._dot._dot-sw,\n._cropper ._dot._dot-s,\n._cropper ._dot._dot-se {\n  cursor: s-resize;\n}\n._cropper ._dot._dot-sw:before,\n._cropper ._dot._dot-s:before,\n._cropper ._dot._dot-se:before {\n  bottom: -3px;\n}\n._cropper ._dot._dot-ne,\n._cropper ._dot._dot-e,\n._cropper ._dot._dot-se {\n  cursor: e-resize;\n}\n._cropper ._dot._dot-ne:before,\n._cropper ._dot._dot-e:before,\n._cropper ._dot._dot-se:before {\n  right: -3px;\n}\n._cropper ._dot._dot-n:before,\n._cropper ._dot._dot-s:before,\n._cropper ._dot._dot-center:before {\n  left: 50%;\n  margin-left: -3px;\n}\n._cropper ._dot._dot-e:before,\n._cropper ._dot._dot-w:before,\n._cropper ._dot._dot-center:before {\n  top: 50%;\n  margin-top: -3px;\n}\n._cropper ._dot._dot-nw {\n  cursor: nw-resize;\n}\n._cropper ._dot._dot-ne {\n  cursor: ne-resize;\n}\n._cropper ._dot._dot-sw {\n  cursor: sw-resize;\n}\n._cropper ._dot._dot-se {\n  cursor: se-resize;\n}\n._cropper ._dot._dot-center {\n  background-color: transparent;\n}\n._cropper ._dot._dot-center:before {\n  width: 5px;\n  height: 1px;\n  background-color: #fff;\n  top: 50%;\n  margin-top: 2px;\n}\n._cropper ._dot._dot-center:after {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  content: '';\n  top: 50%;\n  left: 50%;\n  margin-left: -1px;\n  height: 5px;\n  width: 1px;\n  background-color: #fff;\n}\n.container {\n  width: 800px;\n  margin: 0 auto;\n}\n", ""]);
 
 	// exports
 
@@ -11328,7 +11314,8 @@
 	        originX: React.PropTypes.number,
 	        originY: React.PropTypes.number,
 	        rate: React.PropTypes.number,
-	        width: React.PropTypes.number
+	        width: React.PropTypes.number,
+	        disabled: React.PropTypes.bool
 	    },
 	    getDefaultProps: function getDefaultProps() {
 	        return {
@@ -11373,6 +11360,9 @@
 	            var _props2 = _this.props;
 	            var originX = _props2.originX;
 	            var originY = _props2.originY;
+	            var disabled = _props2.disabled;
+
+	            if (disabled) return;
 	            var _state = _this.state;
 	            var img_width = _state.img_width;
 	            var img_height = _state.img_height;
@@ -11384,22 +11374,14 @@
 
 	            if (originX + frameWidth >= img_width) {
 	                originX = img_width - frameWidth;
-	                _this.setState({
-	                    originX: originX
-	                });
+	                _this.setState({ originX: originX });
 	            }
 	            if (originY + frameHeight >= img_height) {
 	                originY = img_height - frameHeight;
-	                _this.setState({
-	                    originY: originY
-	                });
+	                _this.setState({ originY: originY });
 	            }
 
-	            _this.setState({
-	                maxLeft: maxLeft,
-	                maxTop: maxTop,
-	                imgLoaded: true
-	            });
+	            _this.setState({ maxLeft: maxLeft, maxTop: maxTop, imgLoaded: true });
 	            // calc clone position
 	            _this.calcPosition(frameWidth, frameHeight, originX, originY);
 	        });
@@ -11411,6 +11393,10 @@
 	        var _state2 = this.state;
 	        var img_width = _state2.img_width;
 	        var img_height = _state2.img_height;
+	        var _props3 = this.props;
+	        var onCrop = _props3.onCrop;
+	        var src = _props3.src;
+	        var disabled = _props3.disabled;
 
 	        if (left < 0) left = 0;
 	        if (top < 0) top = 0;
@@ -11418,7 +11404,7 @@
 	        if (height + top > img_height) top = img_height - height;
 	        if (width < 0 || height < 0 || height > img_height) return false;
 
-	        if (this.props.onCrop) this.props.onCrop(this.props.src, { left: left, top: top, width: width, height: height });
+	        if (onCrop && !disabled) onCrop(src, { left: left, top: top, width: width, height: height });
 
 	        frameNode.setAttribute('style', 'display:block;left:' + left + 'px;top:' + top + 'px;width:' + width + 'px;height:' + height + 'px');
 	        cloneImg.setAttribute('style', 'margin-left:' + -left + 'px;margin-top:' + -top + 'px');
@@ -11611,20 +11597,39 @@
 	    },
 
 	    render: function render() {
-	        var className = '_cropper';
-	        if (this.state.imgLoaded) className += ' _loaded';
-	        if (this.state.dragging) className = className + ' _dragging';
-	        return React.createElement(
+	        var className = ['_cropper'];
+	        var _state8 = this.state;
+	        var imgLoaded = _state8.imgLoaded;
+	        var dragging = _state8.dragging;
+	        var img_height = _state8.img_height;
+	        var img_width = _state8.img_width;
+	        var _props4 = this.props;
+	        var src = _props4.src;
+	        var disabled = _props4.disabled;
+
+	        if (imgLoaded) className.push('_loaded');
+	        if (dragging) className.push('_dragging');
+	        className = className.join(' ');
+	        if (disabled) className = '_cropper _disabled';
+	        var imageNode = React.createElement(
+	            'div',
+	            { className: '_source', ref: 'sourceNode' },
+	            React.createElement('img', { src: src, crossOrigin: true, ref: 'img', onLoad: this.imgOnload,
+	                width: img_width, height: img_height })
+	        );
+
+	        var node = disabled ? React.createElement(
+	            'div',
+	            { className: className, ref: 'container', style: { 'position': 'relative', 'height': img_height } },
+	            imageNode,
+	            React.createElement('div', { className: '_modal' })
+	        ) : React.createElement(
 	            'div',
 	            { className: className, onMouseLeave: this.handleDragStop,
 	                ref: 'container', onMouseMove: this.handleDrag,
 	                onMouseDown: this.handleDragStart, onMouseUp: this.handleDragStop,
-	                style: { 'position': 'relative', 'height': this.state.img_height } },
-	            React.createElement(
-	                'div',
-	                { className: '_source', ref: 'sourceNode' },
-	                React.createElement('img', { src: this.props.src, crossOrigin: true, ref: 'img', onLoad: this.imgOnload, width: this.state.img_width, height: this.state.img_height })
-	            ),
+	                style: { 'position': 'relative', 'height': img_height } },
+	            imageNode,
 	            React.createElement('div', { className: '_modal' }),
 	            React.createElement(
 	                'div',
@@ -11632,7 +11637,7 @@
 	                React.createElement(
 	                    'div',
 	                    { className: '_clone' },
-	                    React.createElement('img', { src: this.props.src, crossOrigin: true, ref: 'cloneImg', width: this.state.img_width })
+	                    React.createElement('img', { src: src, crossOrigin: true, ref: 'cloneImg', width: img_width })
 	                ),
 	                React.createElement('span', { className: '_move', 'data-action': 'move' }),
 	                React.createElement('span', { className: '_dot _dot-center', 'data-action': 'ne' }),
@@ -11646,6 +11651,8 @@
 	                React.createElement('span', { className: '_dot _dot-sw', 'data-action': 'sw' })
 	            )
 	        );
+
+	        return node;
 	    }
 	});
 
