@@ -28,7 +28,7 @@ const ImageCropDemo = React.createClass({
     },
 
     render() {
-        const src = 'http://braavos.me/images/posts/college-rock/the-smiths.png';
+        const src="test.jpg";
         return (
             <ul>
                 <li>

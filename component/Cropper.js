@@ -69,7 +69,7 @@ const Cropper = React.createClass({
         const frameNode = ReactDOM.findDOMNode(this.refs.frameNode)
         const cloneImg = ReactDOM.findDOMNode(this.refs.cloneImg)
         const {img_width, img_height} = this.state;
-        const {onCrop, src, disabled, rate} = this.props;
+        const {src, disabled, rate} = this.props;
         
         if (width < 0 || height < 0) return false;
 
@@ -92,9 +92,6 @@ const Cropper = React.createClass({
         if (left < 0) left = 0;
         if (top < 0) top = 0;
 
-
-        if (onCrop && !disabled) onCrop(src, {left, top, width, height});
-       
         frameNode.setAttribute('style', `display:block;left:${left}px;top:${top}px;width:${width}px;height:${height}px`)
         cloneImg.setAttribute('style', `margin-left:${-left}px;margin-top:${-top}px`)
     },
@@ -230,12 +227,17 @@ const Cropper = React.createClass({
 
 
     crop(){
-        const {frameWidth, frameHeight, originX, originY} = this.state;
+        const {frameWidth, frameHeight, originX, originY, img_width} = this.state;
+        const {src} = this.props;
         let canvas = document.createElement('canvas');
         let img = ReactDOM.findDOMNode(this.refs.img);
-        canvas.width = frameWidth;
-        canvas.height = frameHeight;
-        canvas.getContext("2d").drawImage(img, originX, originY, frameWidth, frameHeight, 0, 0, frameWidth, frameHeight)
+        const _rate = img.naturalWidth / img_width;
+        const realWidth = frameWidth * _rate;
+        const realHeight = frameHeight * _rate;
+        canvas.width = realWidth;
+        canvas.height = realHeight;
+
+        canvas.getContext("2d").drawImage(img, originX * _rate, originY * _rate, realWidth, realHeight, 0, 0, realWidth, realHeight);
         return canvas.toDataURL();
     },
 
@@ -250,7 +252,7 @@ const Cropper = React.createClass({
         if (disabled) className = '_cropper _disabled';
         const imageNode =  <div className="_source" ref="sourceNode">
                                 <img src={src} crossOrigin ref='img' onLoad={this.imgOnload} 
-                                width={img_width} height={img_height}/>
+                                width={img_width} height={img_height} />
                             </div>;
 
         const node = disabled ?
@@ -266,7 +268,7 @@ const Cropper = React.createClass({
                     <div className="_modal"></div>
                     <div className="_frame" ref="frameNode">
                         <div className="_clone">
-                            <img src={src} crossOrigin ref="cloneImg" width={img_width}/>
+                            <img src={src} crossOrigin ref="cloneImg" width={img_width} height={img_height}/>
                         </div>
                         <span className="_move" data-action='move'></span>
                         <span className="_dot _dot-center" data-action="ne"></span>
