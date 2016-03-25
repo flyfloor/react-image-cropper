@@ -276,6 +276,10 @@ const Cropper = React.createClass({
                         <span className="_dot _dot-se" data-action="se"></span>
                         <span className="_dot _dot-s" data-action="s"></span>
                         <span className="_dot _dot-sw" data-action="sw"></span>
+                        <span className="_line _line-n" data-action="n"></span>
+                        <span className="_line _line-s" data-action="s"></span>
+                        <span className="_line _line-w" data-action="w"></span>
+                        <span className="_line _line-e" data-action="e"></span>
                     </div>
                 </div>;
 
