@@ -56,50 +56,53 @@
     ._dot {
         &:before {
             content: '';
-            background: #88f;
+            border: 1px solid #88f;
+            background: #fff;
             display: block;
-            width: 5px;
-            height: 5px;
+            width: 6px;
+            height: 6px;
+            padding: 0;
+            margin: 0;
             position: absolute;
         }
         &._dot-nw, &._dot-w, &._dot-sw {
             cursor: w-resize;
             &:before {
-                left: -3px;
+                left: -4px;
             }
         }
         &._dot-nw, &._dot-n, &._dot-ne {
             cursor: n-resize;
             &:before {
-                top: -3px;
+                top: -4px;
             }
         }
 
         &._dot-sw, &._dot-s, &._dot-se {
             cursor: s-resize;
             &:before {
-                bottom: -3px;
+                bottom: -4px;
             }
         }
 
         &._dot-ne, &._dot-e, &._dot-se {
             cursor: e-resize;
             &:before {
-                right: -3px;
+                right: -4px;
             }
         }
         
         &._dot-n, &._dot-s, &._dot-center {
             &:before {
                 left: 50%;
-                margin-left: -3px;
+                margin-left: -4px;
             }
         }
 
         &._dot-e, &._dot-w, &._dot-center {
             &:before {
                 top: 50%;
-                margin-top: -3px;
+                margin-top: -4px;
             }
         }
         &._dot-nw {
@@ -117,21 +120,25 @@
         &._dot-center {
             background-color: transparent;
             &:before {
-                width: 5px;
-                height: 1px;
-                background-color: #fff;
+                border: none;
+                width: 8px;
+                height: 2px;
+                background-color: #88f;
                 top: 50%;
-                margin-top: 2px;
+                left: 50%;
+                margin-left: -4px;
+                margin-top: -1px;
             }
             &:after {
                 .__absolute;
                 content: '';
                 top: 50%;
                 left: 50%;
+                margin-top: -4px;
                 margin-left: -1px;
-                height: 5px;
-                width: 1px;
-                background-color: #fff;
+                height: 8px;
+                width: 2px;
+                background-color: #88f;
             }
         }
     }

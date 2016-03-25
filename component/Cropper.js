@@ -153,7 +153,7 @@ const Cropper = React.createClass({
             action
         });
         if (!action) {
-            let container = ReactDOM.findDOMNode(this.refs.container)
+            let container = ReactDOM.findDOMNode(this.refs.container);
             const {offsetLeft, offsetTop} = container;
             this.setState({
                 offsetLeft: pageX - offsetLeft,
