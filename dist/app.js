@@ -141,6 +141,7 @@
 	                        } },
 	                    'crop'
 	                ),
+	                _react2['default'].createElement('br', null),
 	                _react2['default'].createElement(
 	                    'h4',
 	                    null,
@@ -156,7 +157,8 @@
 	                    null,
 	                    'With given rate'
 	                ),
-	                _react2['default'].createElement(_componentCropper2['default'], { src: src, rate: 2, ref: 'image2' }),
+	                _react2['default'].createElement(_componentCropper2['default'], { src: src, rate: 16 / 9, width: 500, ref: 'image2' }),
+	                _react2['default'].createElement('br', null),
 	                _react2['default'].createElement(
 	                    'button',
 	                    { onClick: function () {
@@ -180,6 +182,7 @@
 	                    'Disabled'
 	                ),
 	                _react2['default'].createElement(_componentCropper2['default'], { src: src, ref: 'image3', disabled: true }),
+	                _react2['default'].createElement('br', null),
 	                _react2['default'].createElement(
 	                    'button',
 	                    { onClick: function () {
@@ -10899,12 +10902,7 @@
 	        var disabled = _props3.disabled;
 	        var rate = _props3.rate;
 
-	        console.log(width, left, top, height, img_width, img_height);
 	        if (width < 0 || height < 0) return false;
-	        if (left < 0) left = 0;
-	        if (top < 0) top = 0;
-	        if (width + left > img_width) left = img_width - width;
-	        if (height + top > img_height) top = img_height - height;
 
 	        // width / height > img_width /img_height
 	        if (width / img_width > height / img_height) {
@@ -10920,6 +10918,10 @@
 	                width = height * rate;
 	            }
 	        }
+	        if (width + left > img_width) left = img_width - width;
+	        if (height + top > img_height) top = img_height - height;
+	        if (left < 0) left = 0;
+	        if (top < 0) top = 0;
 
 	        if (onCrop && !disabled) onCrop(src, { left: left, top: top, width: width, height: height });
 
@@ -11258,7 +11260,7 @@
 
 
 	// module
-	exports.push([module.id, "._cropper._disabled ._modal {\n  background: #666;\n  opacity: .7;\n  cursor: not-allowed;\n}\n._cropper._dragging ._frame {\n  opacity: .8;\n}\n._cropper img {\n  user-drag: none;\n  user-select: none;\n  -moz-user-select: none;\n  -webkit-user-drag: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n}\n._cropper .__absolute {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n}\n._cropper ._modal {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  opacity: .4;\n  background-color: #222;\n}\n._cropper ._source {\n  overflow: hidden;\n}\n._cropper ._source > img {\n  float: left;\n}\n._cropper ._clone {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n._cropper ._frame {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  display: none;\n}\n._cropper ._frame > ._move {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  cursor: move;\n  outline: 1px dashed #88f;\n  background-color: transparent;\n}\n._cropper ._line {\n  position: absolute;\n  display: block;\n  z-index: 100;\n}\n._cropper ._line._line-s,\n._cropper ._line._line-n {\n  cursor: n-resize;\n  left: 0;\n  width: 100%;\n  height: 1px;\n  background: transparent;\n}\n._cropper ._line._line-w,\n._cropper ._line._line-e {\n  cursor: e-resize;\n  top: 0;\n  width: 1px;\n  height: 100%;\n  background: transparent;\n}\n._cropper ._line._line-s {\n  cursor: s-resize;\n  bottom: 0;\n}\n._cropper ._line._line-n {\n  top: 0;\n}\n._cropper ._line._line-e {\n  right: 0;\n}\n._cropper ._line._line-w {\n  cursor: w-resize;\n  left: 0;\n}\n._cropper ._dot:before {\n  content: '';\n  border: 1px solid #88f;\n  background: #fff;\n  display: block;\n  width: 6px;\n  height: 6px;\n  padding: 0;\n  margin: 0;\n  position: absolute;\n}\n._cropper ._dot._dot-nw,\n._cropper ._dot._dot-w,\n._cropper ._dot._dot-sw {\n  cursor: w-resize;\n}\n._cropper ._dot._dot-nw:before,\n._cropper ._dot._dot-w:before,\n._cropper ._dot._dot-sw:before {\n  left: -4px;\n}\n._cropper ._dot._dot-nw,\n._cropper ._dot._dot-n,\n._cropper ._dot._dot-ne {\n  cursor: n-resize;\n}\n._cropper ._dot._dot-nw:before,\n._cropper ._dot._dot-n:before,\n._cropper ._dot._dot-ne:before {\n  top: -4px;\n}\n._cropper ._dot._dot-sw,\n._cropper ._dot._dot-s,\n._cropper ._dot._dot-se {\n  cursor: s-resize;\n}\n._cropper ._dot._dot-sw:before,\n._cropper ._dot._dot-s:before,\n._cropper ._dot._dot-se:before {\n  bottom: -4px;\n}\n._cropper ._dot._dot-ne,\n._cropper ._dot._dot-e,\n._cropper ._dot._dot-se {\n  cursor: e-resize;\n}\n._cropper ._dot._dot-ne:before,\n._cropper ._dot._dot-e:before,\n._cropper ._dot._dot-se:before {\n  right: -4px;\n}\n._cropper ._dot._dot-n:before,\n._cropper ._dot._dot-s:before,\n._cropper ._dot._dot-center:before {\n  left: 50%;\n  margin-left: -4px;\n}\n._cropper ._dot._dot-e:before,\n._cropper ._dot._dot-w:before,\n._cropper ._dot._dot-center:before {\n  top: 50%;\n  margin-top: -4px;\n}\n._cropper ._dot._dot-nw {\n  cursor: nw-resize;\n}\n._cropper ._dot._dot-ne {\n  cursor: ne-resize;\n}\n._cropper ._dot._dot-sw {\n  cursor: sw-resize;\n}\n._cropper ._dot._dot-se {\n  cursor: se-resize;\n}\n._cropper ._dot._dot-center {\n  background-color: transparent;\n}\n._cropper ._dot._dot-center:before {\n  border: none;\n  width: 8px;\n  height: 2px;\n  background-color: #88f;\n  top: 50%;\n  left: 50%;\n  margin-left: -4px;\n  margin-top: -1px;\n}\n._cropper ._dot._dot-center:after {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  content: '';\n  top: 50%;\n  left: 50%;\n  margin-top: -4px;\n  margin-left: -1px;\n  height: 8px;\n  width: 2px;\n  background-color: #88f;\n}\n.container {\n  width: 800px;\n  margin: 0 auto;\n}\n", ""]);
+	exports.push([module.id, "._cropper._disabled ._modal {\n  background: #666;\n  opacity: .7;\n  cursor: not-allowed;\n}\n._cropper._dragging ._frame {\n  opacity: .8;\n}\n._cropper img {\n  user-drag: none;\n  user-select: none;\n  -moz-user-select: none;\n  -webkit-user-drag: none;\n  -webkit-user-select: none;\n  -ms-user-select: none;\n}\n._cropper .__absolute {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n}\n._cropper ._modal {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  opacity: .4;\n  background-color: #222;\n}\n._cropper ._source {\n  overflow: hidden;\n}\n._cropper ._source > img {\n  float: left;\n}\n._cropper ._clone {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  position: absolute;\n  left: 0;\n  top: 0;\n}\n._cropper ._frame {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  display: none;\n}\n._cropper ._frame > ._move {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  cursor: move;\n  outline: 1px dashed #88f;\n  background-color: transparent;\n}\n._cropper ._line {\n  position: absolute;\n  display: block;\n  z-index: 100;\n}\n._cropper ._line._line-s,\n._cropper ._line._line-n {\n  cursor: n-resize;\n  left: 0;\n  width: 100%;\n  height: 1px;\n  background: transparent;\n}\n._cropper ._line._line-w,\n._cropper ._line._line-e {\n  cursor: e-resize;\n  top: 0;\n  width: 1px;\n  height: 100%;\n  background: transparent;\n}\n._cropper ._line._line-s {\n  cursor: s-resize;\n  bottom: 0;\n}\n._cropper ._line._line-n {\n  top: 0;\n}\n._cropper ._line._line-e {\n  right: 0;\n}\n._cropper ._line._line-w {\n  cursor: w-resize;\n  left: 0;\n}\n._cropper ._dot {\n  z-index: 10;\n}\n._cropper ._dot:before {\n  content: '';\n  border: 1px solid #88f;\n  background: #fff;\n  display: block;\n  width: 6px;\n  height: 6px;\n  padding: 0;\n  margin: 0;\n  position: absolute;\n}\n._cropper ._dot._dot-nw,\n._cropper ._dot._dot-w,\n._cropper ._dot._dot-sw {\n  cursor: w-resize;\n}\n._cropper ._dot._dot-nw:before,\n._cropper ._dot._dot-w:before,\n._cropper ._dot._dot-sw:before {\n  left: -4px;\n}\n._cropper ._dot._dot-nw,\n._cropper ._dot._dot-n,\n._cropper ._dot._dot-ne {\n  cursor: n-resize;\n}\n._cropper ._dot._dot-nw:before,\n._cropper ._dot._dot-n:before,\n._cropper ._dot._dot-ne:before {\n  top: -4px;\n}\n._cropper ._dot._dot-sw,\n._cropper ._dot._dot-s,\n._cropper ._dot._dot-se {\n  cursor: s-resize;\n}\n._cropper ._dot._dot-sw:before,\n._cropper ._dot._dot-s:before,\n._cropper ._dot._dot-se:before {\n  bottom: -4px;\n}\n._cropper ._dot._dot-ne,\n._cropper ._dot._dot-e,\n._cropper ._dot._dot-se {\n  cursor: e-resize;\n}\n._cropper ._dot._dot-ne:before,\n._cropper ._dot._dot-e:before,\n._cropper ._dot._dot-se:before {\n  right: -4px;\n}\n._cropper ._dot._dot-n:before,\n._cropper ._dot._dot-s:before,\n._cropper ._dot._dot-center:before {\n  left: 50%;\n  margin-left: -4px;\n}\n._cropper ._dot._dot-e:before,\n._cropper ._dot._dot-w:before,\n._cropper ._dot._dot-center:before {\n  top: 50%;\n  margin-top: -4px;\n}\n._cropper ._dot._dot-nw {\n  cursor: nw-resize;\n}\n._cropper ._dot._dot-ne {\n  cursor: ne-resize;\n}\n._cropper ._dot._dot-sw {\n  cursor: sw-resize;\n}\n._cropper ._dot._dot-se {\n  cursor: se-resize;\n}\n._cropper ._dot._dot-center {\n  background-color: transparent;\n}\n._cropper ._dot._dot-center:before {\n  border: none;\n  width: 8px;\n  height: 2px;\n  background-color: #88f;\n  top: 50%;\n  left: 50%;\n  margin-left: -4px;\n  margin-top: -1px;\n}\n._cropper ._dot._dot-center:after {\n  position: absolute;\n  left: 0;\n  top: 0;\n  bottom: 0;\n  right: 0;\n  content: '';\n  top: 50%;\n  left: 50%;\n  margin-top: -4px;\n  margin-left: -1px;\n  height: 8px;\n  width: 2px;\n  background-color: #88f;\n}\nbody {\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  -o-user-select: none;\n  user-select: none;\n}\n.container {\n  width: 800px;\n  margin: 0 auto;\n}\n", ""]);
 
 	// exports
 

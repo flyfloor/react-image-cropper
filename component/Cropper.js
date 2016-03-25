@@ -71,12 +71,7 @@ const Cropper = React.createClass({
         const {img_width, img_height} = this.state;
         const {onCrop, src, disabled, rate} = this.props;
         
-        console.log(width, left, top, height, img_width, img_height);
         if (width < 0 || height < 0) return false;
-        if (left < 0) left = 0;
-        if (top < 0) top = 0;
-        if (width + left > img_width) left = img_width - width;
-        if (height + top > img_height) top = img_height - height;
 
         // width / height > img_width /img_height
         if (width / img_width > height / img_height) {
@@ -92,6 +87,11 @@ const Cropper = React.createClass({
                 width = height * rate;
             }
         }
+        if (width + left > img_width) left = img_width - width;
+        if (height + top > img_height) top = img_height - height;
+        if (left < 0) left = 0;
+        if (top < 0) top = 0;
+
 
         if (onCrop && !disabled) onCrop(src, {left, top, width, height});
        
@@ -226,6 +226,8 @@ const Cropper = React.createClass({
             }
         }
     },
+
+
 
     crop(){
         const {frameWidth, frameHeight, originX, originY} = this.state;

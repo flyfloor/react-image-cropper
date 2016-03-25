@@ -43,12 +43,14 @@ const ImageCropDemo = React.createClass({
                     <h3>With given origin X and Y</h3>
                     <Cropper src={src} originX={100} originY={100} ref="image1"/>
                     <button onClick={() => this.OnClick('image1')}>crop</button>
+                    <br/>
                     <h4>after crop</h4>
                     {this.state.image1 ? <img width="200" src={this.state.image1} alt=""/>: null}
                 </li>
                 <li>
                     <h3>With given rate</h3>
-                    <Cropper src={src} rate={2} ref="image2"/>
+                    <Cropper src={src} rate={16/9} width={500} ref="image2"/>
+                    <br/>
                     <button onClick={() => this.OnClick('image2')}>crop</button>
                     <h4>after crop</h4>
                     {this.state.image2 ? <img width="200" src={this.state.image2} alt=""/>: null}
@@ -56,6 +58,7 @@ const ImageCropDemo = React.createClass({
                 <li>
                     <h3>Disabled</h3>
                     <Cropper src={src} ref="image3" disabled={true}/>
+                    <br/>
                     <button onClick={() => this.OnClick('image3')}>crop</button>
                 </li>
             </ul>
