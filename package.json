@@ -4,7 +4,7 @@
   "description": "react image crop",
   "main": "app.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js & babel --presets es2015,react --watch component/ --out-dir lib/"
   },
   "repository": {
     "type": "git",

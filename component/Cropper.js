@@ -72,7 +72,6 @@ const Cropper = React.createClass({
         const {src, disabled, rate} = this.props;
         
         if (width < 0 || height < 0) return false;
-
         // width / height > img_width /img_height
         if (width / img_width > height / img_height) {
             if (width > img_width) {
