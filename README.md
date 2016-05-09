@@ -2,6 +2,8 @@
 
 A image cropper, use React.js
 
+**[See the demo](http://braavos.me/react-image-cropper/)**
+
 Custom:
 
 + initial cropper frame position 
