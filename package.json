@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node server.js & babel --presets es2015,react --watch component/ --out-dir lib/",
-    "build": "webpack -p",
+    "build": "webpack -p"
   },
   "repository": {
     "type": "git",
