@@ -1,6 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var publicPath = process.env.NODE_ENV === 'dev' ? '/dist/' : '';
 
 module.exports = {
 
@@ -8,7 +9,7 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'app.js',
-        publicPath: '/dist/'
+        publicPath: publicPath,
     },
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(),
