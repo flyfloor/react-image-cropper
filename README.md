@@ -1,5 +1,8 @@
 ## React Image Cropper
 
+[![Downloads](https://img.shields.io/npm/dt/react-image-cropper.svg)](https://www.npmjs.com/package/react-image-cropper)
+[![Version](https://img.shields.io/npm/v/react-image-cropper.svg)](https://www.npmjs.com/package/react-image-cropper)
+
 A image cropper, use React.js
 
 **[See the demo](http://braavos.me/react-image-cropper/)**
