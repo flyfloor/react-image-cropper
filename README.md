@@ -31,7 +31,7 @@ Custom:
 
 `var values = this.refs.cropper.values()`
 
-+ costom use
++ custom use
 
 | prop  |  value   |
 |:-------:|:--------|
