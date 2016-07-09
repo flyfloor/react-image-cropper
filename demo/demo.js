@@ -10,6 +10,8 @@ const ImageCropDemo = React.createClass({
             image1: '',
             image2: '',
             image3: '',
+            image4: '',
+            image4Values: ''
         };
     },
 
@@ -20,15 +22,16 @@ const ImageCropDemo = React.createClass({
         });
     },
 
-    handleMove(coords){
-        const previewNode = ReactDOM.findDOMNode(this.refs.previewNode)
-        const previewHolder = ReactDOM.findDOMNode(this.refs.previewHolder)
-        const {left, top, width, height} = coords;
-        previewNode.setAttribute('style', `margin-left:${-left}px;margin-top:${-top}px;width: ${500 / width}%`)
+    OnClickValues(state){
+        let node = this.refs[state];
+        this.setState({
+            [state+'Values']: node.values()
+        });
+        console.log(state+'Values');
     },
-
+    
     render() {
-        const src="http://braavos.me/react-image-cropper/dist/test.jpg";
+        const src="test.jpg";
         return (
             <ul>
                 <li>
@@ -60,6 +63,17 @@ const ImageCropDemo = React.createClass({
                     <Cropper src={src} ref="image3" disabled={true}/>
                     <br/>
                     <button onClick={() => this.OnClick('image3')}>crop</button>
+                </li>
+                <li>
+                    <h3>Variable width and height and don't allow new selection</h3>
+                    <Cropper src={src} width={500} height={100} fixedRatio={false} allowNewSelection={false} ref="image4"/>
+                    <br/>
+                    <button onClick={() => this.OnClickValues('image4')}>values</button>
+                    <h4>values</h4>
+                    {this.state.image4Values ? <p>{JSON.stringify(this.state.image4Values)}</p> : null}
+                    <button onClick={() => this.OnClick('image4')}>crop</button>
+                    <h4>after crop</h4>
+                    {this.state.image4 ? <img width="200" src={this.state.image4} alt=""/>: null}
                 </li>
             </ul>
         );

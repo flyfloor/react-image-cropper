@@ -29,12 +29,19 @@ Custom:
 
 `image.src = this.refs.cropper.crop()`
 
++ get crop values
+
+`var values = this.refs.cropper.values()`
+
 + costom use
 
 | prop  |  value   |
 |:-------:|:--------|
 | rate | width / height |
 | width | cropper frame width |
+| height | cropper frame height |
+| fixedRatio | turn on/off fixed ratio (bool default true) |
+| allowNewSelection | allow user to create a new selection instead of reusing initial selection (bool default true) |
 | originX | cropper original position(x axis)|
 | originY | cropper original position(Y axis)|
 
