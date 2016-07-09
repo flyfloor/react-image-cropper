@@ -17,8 +17,6 @@ Custom:
 
 + `import {Cropper} from 'react-image-cropper'`
 
-+ `import style from 'react-image-cropper/css/cropper.less'`
-
 + define Cropper with src, and ref to execute crop method  
 
 ```

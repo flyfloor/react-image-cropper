@@ -1,5 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
+const objectAssign = require('object-assign');
 
 const Cropper = React.createClass({
     PropTypes: {
@@ -29,6 +30,10 @@ const Cropper = React.createClass({
         return {
             img_width: '100%',
             img_height: 'auto',
+            imgWidth: 200,
+            imgheight: 200,
+            imgTop: 0,
+            imgLeft: 0,
             originX,
             originY,
             startX: 0,
@@ -140,8 +145,7 @@ const Cropper = React.createClass({
             height = img_height;
         }
 
-        frameNode.setAttribute('style', `display:block;left:${left}px;top:${top}px;width:${width}px;height:${height}px`);
-        cloneImg.setAttribute('style', `margin-left:${-left}px;margin-top:${-top}px`);
+        this.setState({imgLeft: left, imgTop: top, imgWidth: width, imgHeight: height});
     },
 
     imgOnload(){
@@ -199,7 +203,7 @@ const Cropper = React.createClass({
 
     handleDragStart(e){
         const {allowNewSelection} = this.state;
-        const action = e.target.getAttribute('data-action');
+        const action = e.target.getAttribute('data-action') ? e.target.getAttribute('data-action') : e.target.parentNode.getAttribute('data-action');
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY;
         if (action || allowNewSelection) {
@@ -335,40 +339,94 @@ const Cropper = React.createClass({
         if (dragging) className.push('_dragging');
         className = className.join(' ');
         if (disabled) className = '_cropper _disabled';
-        const imageNode = <div className="_source" ref="sourceNode">
-            <img src={src} crossOrigin ref='img' onLoad={this.imgOnload}
+        const imageNode = <div style={styles.source} ref="sourceNode">
+            <img src={src} style={objectAssign({}, styles.img, styles.source_img)} crossOrigin ref='img'
+                 onLoad={this.imgOnload}
                  width={img_width} height={img_height}/>
         </div>;
 
         const node = disabled ?
             <div className={className} ref='container' style={{'position': 'relative', 'height': img_height}}>
                  {imageNode}
-                     <div className="_modal"></div>
+                     <div style={objectAssign({}, styles.modal, styles.modal_disabled)}></div>
             </div>
             : <div className={className}
                    ref="container"
                    onMouseDown={this.handleDragStart} onTouchStart={this.handleDragStart}
                    style={{'position': 'relative', 'height': img_height}}>
                    {imageNode}
-                       <div className="_modal"></div>
-                       <div className="_frame" ref="frameNode">
-                           <div className="_clone">
-                               <img src={src} crossOrigin ref="cloneImg" width={img_width} height={img_height}/>
+                       <div style={styles.modal}></div>
+                       <div style={
+                           objectAssign(
+                               {},
+                               styles.frame,
+                               dragging ? styles.dragging_frame : {},
+                               {
+                                   display: 'block',
+                                   left: this.state.imgLeft,
+                                   top: this.state.imgTop,
+                                   width: this.state.imgWidth,
+                                   height: this.state.imgHeight
+                               }
+                           )} ref="frameNode">
+                           <div style={styles.clone}>
+                               <img src={src} style={objectAssign(
+                                   {},
+                                   styles.img,
+                                   {
+                                       marginLeft: -this.state.imgLeft,
+                                       marginTop: -this.state.imgTop
+                                   }
+                               )}
+                                    crossOrigin ref="cloneImg" width={img_width}
+                                    height={img_height}/>
                            </div>
-                           <span className="_move" data-action='move'></span>
-                           <span className="_dot _dot-center" data-action='move'></span>
-                           <span className="_dot _dot-ne" data-action="ne"></span>
-                           <span className="_dot _dot-n" data-action="n"></span>
-                           <span className="_dot _dot-nw" data-action="nw"></span>
-                           <span className="_dot _dot-e" data-action="e"></span>
-                           <span className="_dot _dot-w" data-action="w"></span>
-                           <span className="_dot _dot-se" data-action="se"></span>
-                           <span className="_dot _dot-s" data-action="s"></span>
-                           <span className="_dot _dot-sw" data-action="sw"></span>
-                           <span className="_line _line-n" data-action="n"></span>
-                           <span className="_line _line-s" data-action="s"></span>
-                           <span className="_line _line-w" data-action="w"></span>
-                           <span className="_line _line-e" data-action="e"></span>
+                           <span className="_move" style={styles.move} data-action='move'></span>
+                           <span style={objectAssign({}, styles.dot, styles.dotCenter)}
+                                 data-action='move'>
+                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerCenterVertical)}></span>
+                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerCenterHorizontal)}></span>
+                           </span>
+                           <span style={objectAssign({}, styles.dot, styles.dotNE)}
+                                 data-action="ne">
+                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerNE)}></span>
+                           </span>
+                           <span style={objectAssign({}, styles.dot, styles.dotN)}
+                                 data-action="n">
+                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerN)}></span>
+                           </span>
+                           <span style={objectAssign({}, styles.dot, styles.dotNW)}
+                                 data-action="nw">
+                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerNW)}></span>
+                           </span>
+                           <span style={objectAssign({}, styles.dot, styles.dotE)}
+                                 data-action="e">
+                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerE)}></span>
+                           </span>
+                           <span style={objectAssign({}, styles.dot, styles.dotW)}
+                                 data-action="w">
+                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerW)}></span>
+                           </span>
+                           <span style={objectAssign({}, styles.dot, styles.dotSE)}
+                                 data-action="se">
+                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerSE)}></span>
+                           </span>
+                           <span style={objectAssign({}, styles.dot, styles.dotS)}
+                                 data-action="s">
+                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerS)}></span>
+                           </span>
+                           <span style={objectAssign({}, styles.dot, styles.dotSW)}
+                                 data-action="sw">
+                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerSW)}></span>
+                           </span>
+                           <span className="_line _line-n" style={objectAssign({}, styles.line, styles.lineN)}
+                                 data-action="n"></span>
+                           <span className="_line _line-s" style={objectAssign({}, styles.line, styles.lineS)}
+                                 data-action="s"></span>
+                           <span className="_line _line-w" style={objectAssign({}, styles.line, styles.lineW)}
+                                 data-action="w"></span>
+                           <span className="_line _line-e" style={objectAssign({}, styles.line, styles.lineE)}
+                                 data-action="e"></span>
                        </div>
         </div>;
 
@@ -377,5 +435,214 @@ const Cropper = React.createClass({
         );
     }
 });
+
+var styles = {
+    img: {
+        userDrag: 'none',
+        userSelect: 'none',
+        MozUserSelect: 'none',
+        WebkitUserDrag: 'none',
+        WebkitUserSelect: 'none',
+        msUserSelect: 'none'
+    },
+
+
+    clone: {
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        position: 'absolute',
+        left: '0',
+        top: '0'
+    },
+
+    frame: {
+        position: 'absolute',
+        left: '0',
+        top: '0',
+        bottom: '0',
+        right: '0',
+        display: 'none'
+    },
+
+    dragging_frame: {
+        opacity: '.8'
+    },
+
+    source: {
+        overflow: 'hidden'
+    },
+
+    source_img: {
+        float: 'left'
+    },
+
+    modal: {
+        position: 'absolute',
+        left: '0',
+        top: '0',
+        bottom: '0',
+        right: '0',
+        opacity: .4,
+        backgroundColor: '#222'
+    },
+    modal_disabled: {
+        backgroundColor: '#666',
+        opacity: .7,
+        cursor: 'not-allowed'
+    },
+    move: {
+        position: 'absolute',
+        left: '0',
+        top: '0',
+        bottom: '0',
+        right: '0',
+        cursor: 'move',
+        outline: '1px dashed #88f',
+        backgroundColor: 'transparent'
+    },
+
+    dot: {
+        zIndex: '10'
+    },
+    dotN: {
+        cursor: 'n-resize'
+    },
+    dotS: {
+        cursor: 's-resize'
+    },
+    dotE: {
+        cursor: 'e-resize'
+    },
+    dotW: {
+        cursor: 'w-resize'
+    },
+    dotNW: {
+        cursor: 'nw-resize'
+    },
+    dotNE: {
+        cursor: 'ne-resize'
+    },
+    dotSW: {
+        cursor: 'sw-resize'
+    },
+    dotSE: {
+        cursor: 'se-resize'
+    },
+    dotCenter: {
+        backgroundColor: 'transparent'
+    },
+
+    dotInner: {
+        border: '1px solid #88f',
+        background: '#fff',
+        display: 'block',
+        width: '6px',
+        height: '6px',
+        padding: '0',
+        margin: '0',
+        position: 'absolute'
+    },
+
+    dotInnerN: {
+        top: '-4px',
+        left: '50%',
+        marginLeft: '-4px'
+    },
+    dotInnerS: {
+        bottom: '-4px',
+        left: '50%',
+        marginLeft: '-4px'
+    },
+    dotInnerE: {
+        left: '-4px',
+        top: '50%',
+        marginTop: '-4px'
+    },
+    dotInnerW: {
+        right: '-4px',
+        top: '50%',
+        marginTop: '-4px'
+    },
+    dotInnerNE: {
+        top: '-4px',
+        right: '-4px'
+    },
+    dotInnerSE: {
+        bottom: '-4px',
+        right: '-4px'
+    },
+    dotInnerNW: {
+        top: '-4px',
+        left: '-4px'
+    },
+    dotInnerSW: {
+        bottom: '-4px',
+        left: '-4px'
+    },
+    dotInnerCenterVertical: {
+        position: 'absolute',
+        border: 'none',
+        width: '2px',
+        height: '8px',
+        backgroundColor: '#88f',
+        top: '50%',
+        left: '50%',
+        marginLeft: '-1px',
+        marginTop: '-4px'
+    },
+    dotInnerCenterHorizontal: {
+        position: 'absolute',
+        border: 'none',
+        width: '8px',
+        height: '2px',
+        backgroundColor: '#88f',
+        top: '50%',
+        left: '50%',
+        marginLeft: '-4px',
+        marginTop: '-1px'
+    },
+
+    line: {
+        position: 'absolute',
+        display: 'block',
+        zIndex: '100'
+    },
+
+    lineS: {
+        cursor: 's-resize',
+        bottom: '0',
+        left: '0',
+        width: '100%',
+        height: '1px',
+        background: 'transparent'
+    },
+    lineN: {
+        cursor: 'n-resize',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '1px',
+        background: 'transparent'
+    },
+    lineE: {
+        cursor: 'e-resize',
+        right: '0',
+        top: '0',
+        width: '1px',
+        height: '100%',
+        background: 'transparent'
+    },
+    lineW: {
+        cursor: 'w-resize',
+        left: '0',
+        top: '0',
+        width: '1px',
+        height: '100%',
+        background: 'transparent'
+    }
+
+}
+
 
 module.exports = Cropper
