@@ -17,6 +17,8 @@ Custom:
 
 + `import {Cropper} from 'react-image-cropper'`
 
++ styles are all inline
+
 + define Cropper with src, and ref to execute crop method  
 
 ```
@@ -42,6 +44,7 @@ Custom:
 | allowNewSelection | allow user to create a new selection instead of reusing initial selection (bool default true) |
 | originX | cropper original position(x axis)|
 | originY | cropper original position(Y axis)|
+| styles | specify styles to override inline styles |
 
 
 **[See the demo](http://braavos.me/react-image-cropper/)**

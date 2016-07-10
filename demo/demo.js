@@ -25,13 +25,13 @@ const ImageCropDemo = React.createClass({
     OnClickValues(state){
         let node = this.refs[state];
         this.setState({
-            [state+'Values']: node.values()
+            [state + 'Values']: node.values()
         });
-        console.log(state+'Values');
+        console.log(state + 'Values');
     },
-    
+
     render() {
-        const src="test.jpg";
+        const src = "demo.jpg";
         return (
             <ul>
                 <li>
@@ -40,7 +40,7 @@ const ImageCropDemo = React.createClass({
                     <br/>
                     <button onClick={() => this.OnClick('image')}>crop</button>
                     <h4>after crop</h4>
-                    {this.state.image ?  <img width="200" src={this.state.image} alt=""/>: null}
+                    {this.state.image ? <img width="200" src={this.state.image} alt=""/> : null}
                 </li>
                 <li>
                     <h3>With given origin X and Y</h3>
@@ -48,15 +48,15 @@ const ImageCropDemo = React.createClass({
                     <button onClick={() => this.OnClick('image1')}>crop</button>
                     <br/>
                     <h4>after crop</h4>
-                    {this.state.image1 ? <img width="200" src={this.state.image1} alt=""/>: null}
+                    {this.state.image1 ? <img width="200" src={this.state.image1} alt=""/> : null}
                 </li>
                 <li>
                     <h3>With given rate</h3>
-                    <Cropper src={src} rate={16/9} width={500} ref="image2"/>
+                    <Cropper src={src} rate={16 / 9} width={500} ref="image2"/>
                     <br/>
                     <button onClick={() => this.OnClick('image2')}>crop</button>
                     <h4>after crop</h4>
-                    {this.state.image2 ? <img width="200" src={this.state.image2} alt=""/>: null}
+                    {this.state.image2 ? <img width="200" src={this.state.image2} alt=""/> : null}
                 </li>
                 <li>
                     <h3>Disabled</h3>
@@ -65,15 +65,41 @@ const ImageCropDemo = React.createClass({
                     <button onClick={() => this.OnClick('image3')}>crop</button>
                 </li>
                 <li>
-                    <h3>Variable width and height and don't allow new selection</h3>
-                    <Cropper src={src} width={500} height={100} fixedRatio={false} allowNewSelection={false} ref="image4"/>
+                    <h3>Variable width and height, don't allow new selection, and set custom styles</h3>
+                    <Cropper src={src}
+                             width={507}
+                             height={1113}
+                             originX={210}
+                             originY={147}
+                             fixedRatio={false}
+                             allowNewSelection={false}
+                             styles={{
+                                 source_img: {
+                                     WebkitFilter: 'blur(3.5px)',
+                                     filter: 'blur(3.5px)'
+                                 },
+                                 modal: {
+                                     opacity: 0.5,
+                                     backgroundColor: '#fff'
+                                 },
+                                 dotInner: {
+                                     borderColor: '#ff0000'
+                                 },
+                                 dotInnerCenterVertical: {
+                                     backgroundColor: '#ff0000'
+                                 },
+                                 dotInnerCenterHorizontal: {
+                                     backgroundColor: '#ff0000'
+                                 }
+                             }}
+                             ref="image4"/>
                     <br/>
                     <button onClick={() => this.OnClickValues('image4')}>values</button>
                     <h4>values</h4>
                     {this.state.image4Values ? <p>{JSON.stringify(this.state.image4Values)}</p> : null}
                     <button onClick={() => this.OnClick('image4')}>crop</button>
                     <h4>after crop</h4>
-                    {this.state.image4 ? <img width="200" src={this.state.image4} alt=""/>: null}
+                    {this.state.image4 ? <img width="200" src={this.state.image4} alt=""/> : null}
                 </li>
             </ul>
         );

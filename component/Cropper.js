@@ -1,6 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
-const objectAssign = require('object-assign');
+const deepExtend = require('deep-extend');
 
 const Cropper = React.createClass({
     PropTypes: {
@@ -13,6 +13,7 @@ const Cropper = React.createClass({
         fixedRatio: React.PropTypes.bool,
         allowNewSelection: React.PropTypes.bool,
         disabled: React.PropTypes.bool,
+        styles: React.PropTypes.object
     },
     getDefaultProps() {
         return {
@@ -22,11 +23,12 @@ const Cropper = React.createClass({
             allowNewSelection: true,
             rate: 1,
             originX: 0,
-            originY: 0
+            originY: 0,
+            styles: {}
         };
     },
     getInitialState() {
-        let {originX, originY, width, height, fixedRatio, allowNewSelection, rate} = this.props;
+        let {originX, originY, width, height, fixedRatio, allowNewSelection, rate, styles} = this.props;
         return {
             img_width: '100%',
             img_height: 'auto',
@@ -46,7 +48,8 @@ const Cropper = React.createClass({
             maxLeft: 0,
             maxTop: 0,
             action: null,
-            imgLoaded: false
+            imgLoaded: false,
+            styles: deepExtend({}, defaultStyles, styles)
         };
     },
 
@@ -275,6 +278,7 @@ const Cropper = React.createClass({
             const _y = pageY - startY;
             let new_width = frameWidth + _x;
             let new_height = fixedRatio ? new_width : (frameHeight + _y);
+            console.log(dir);
             switch (dir) {
                 case 'ne':
                     new_height = frameHeight - _y;
@@ -327,7 +331,9 @@ const Cropper = React.createClass({
         const _rateHeight = img.naturalHeight / img_height;
         const realWidth = parseInt(frameWidth * _rateWidth);
         const realHeight = parseInt(frameHeight * _rateHeight);
-        return {width: realWidth, height: realHeight, x: originX, y: originY};
+        const realX = parseInt(originX * _rateHeight);
+        const realY = parseInt(originY * _rateWidth);
+        return {width: realWidth, height: realHeight, x: realX, y: realY};
     },
 
     render() {
@@ -339,8 +345,8 @@ const Cropper = React.createClass({
         if (dragging) className.push('_dragging');
         className = className.join(' ');
         if (disabled) className = '_cropper _disabled';
-        const imageNode = <div style={styles.source} ref="sourceNode">
-            <img src={src} style={objectAssign({}, styles.img, styles.source_img)} crossOrigin ref='img'
+        const imageNode = <div style={this.state.styles.source} ref="sourceNode">
+            <img src={src} style={deepExtend({}, this.state.styles.img, this.state.styles.source_img)} crossOrigin ref='img'
                  onLoad={this.imgOnload}
                  width={img_width} height={img_height}/>
         </div>;
@@ -348,19 +354,19 @@ const Cropper = React.createClass({
         const node = disabled ?
             <div className={className} ref='container' style={{'position': 'relative', 'height': img_height}}>
                  {imageNode}
-                     <div style={objectAssign({}, styles.modal, styles.modal_disabled)}></div>
+                     <div style={deepExtend({}, this.state.styles.modal, this.state.styles.modal_disabled)}></div>
             </div>
             : <div className={className}
                    ref="container"
                    onMouseDown={this.handleDragStart} onTouchStart={this.handleDragStart}
                    style={{'position': 'relative', 'height': img_height}}>
                    {imageNode}
-                       <div style={styles.modal}></div>
+                       <div style={this.state.styles.modal}></div>
                        <div style={
-                           objectAssign(
+                           deepExtend(
                                {},
-                               styles.frame,
-                               dragging ? styles.dragging_frame : {},
+                               this.state.styles.frame,
+                               dragging ? this.state.styles.dragging_frame : {},
                                {
                                    display: 'block',
                                    left: this.state.imgLeft,
@@ -369,10 +375,10 @@ const Cropper = React.createClass({
                                    height: this.state.imgHeight
                                }
                            )} ref="frameNode">
-                           <div style={styles.clone}>
-                               <img src={src} style={objectAssign(
+                           <div style={this.state.styles.clone}>
+                               <img src={src} style={deepExtend(
                                    {},
-                                   styles.img,
+                                   this.state.styles.img,
                                    {
                                        marginLeft: -this.state.imgLeft,
                                        marginTop: -this.state.imgTop
@@ -381,51 +387,51 @@ const Cropper = React.createClass({
                                     crossOrigin ref="cloneImg" width={img_width}
                                     height={img_height}/>
                            </div>
-                           <span className="_move" style={styles.move} data-action='move'></span>
-                           <span style={objectAssign({}, styles.dot, styles.dotCenter)}
+                           <span className="_move" style={this.state.styles.move} data-action='move'></span>
+                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotCenter)}
                                  data-action='move'>
-                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerCenterVertical)}></span>
-                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerCenterHorizontal)}></span>
+                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerCenterVertical)}></span>
+                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerCenterHorizontal)}></span>
                            </span>
-                           <span style={objectAssign({}, styles.dot, styles.dotNE)}
+                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNE)}
                                  data-action="ne">
-                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerNE)}></span>
+                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerNE)}></span>
                            </span>
-                           <span style={objectAssign({}, styles.dot, styles.dotN)}
+                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotN)}
                                  data-action="n">
-                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerN)}></span>
+                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerN)}></span>
                            </span>
-                           <span style={objectAssign({}, styles.dot, styles.dotNW)}
+                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNW)}
                                  data-action="nw">
-                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerNW)}></span>
+                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerNW)}></span>
                            </span>
-                           <span style={objectAssign({}, styles.dot, styles.dotE)}
+                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotE)}
                                  data-action="e">
-                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerE)}></span>
+                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerE)}></span>
                            </span>
-                           <span style={objectAssign({}, styles.dot, styles.dotW)}
+                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotW)}
                                  data-action="w">
-                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerW)}></span>
+                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerW)}></span>
                            </span>
-                           <span style={objectAssign({}, styles.dot, styles.dotSE)}
+                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSE)}
                                  data-action="se">
-                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerSE)}></span>
+                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerSE)}></span>
                            </span>
-                           <span style={objectAssign({}, styles.dot, styles.dotS)}
+                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotS)}
                                  data-action="s">
-                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerS)}></span>
+                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerS)}></span>
                            </span>
-                           <span style={objectAssign({}, styles.dot, styles.dotSW)}
+                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSW)}
                                  data-action="sw">
-                               <span style={objectAssign({}, styles.dotInner, styles.dotInnerSW)}></span>
+                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerSW)}></span>
                            </span>
-                           <span className="_line _line-n" style={objectAssign({}, styles.line, styles.lineN)}
+                           <span className="_line _line-n" style={deepExtend({}, this.state.styles.line, this.state.styles.lineN)}
                                  data-action="n"></span>
-                           <span className="_line _line-s" style={objectAssign({}, styles.line, styles.lineS)}
+                           <span className="_line _line-s" style={deepExtend({}, this.state.styles.line, this.state.styles.lineS)}
                                  data-action="s"></span>
-                           <span className="_line _line-w" style={objectAssign({}, styles.line, styles.lineW)}
+                           <span className="_line _line-w" style={deepExtend({}, this.state.styles.line, this.state.styles.lineW)}
                                  data-action="w"></span>
-                           <span className="_line _line-e" style={objectAssign({}, styles.line, styles.lineE)}
+                           <span className="_line _line-e" style={deepExtend({}, this.state.styles.line, this.state.styles.lineE)}
                                  data-action="e"></span>
                        </div>
         </div>;
@@ -436,7 +442,7 @@ const Cropper = React.createClass({
     }
 });
 
-var styles = {
+var defaultStyles = {
     img: {
         userDrag: 'none',
         userSelect: 'none',
@@ -555,12 +561,12 @@ var styles = {
         marginLeft: '-4px'
     },
     dotInnerE: {
-        left: '-4px',
+        right: '-4px',
         top: '50%',
         marginTop: '-4px'
     },
     dotInnerW: {
-        right: '-4px',
+        left: '-4px',
         top: '50%',
         marginTop: '-4px'
     },
@@ -614,7 +620,7 @@ var styles = {
         bottom: '0',
         left: '0',
         width: '100%',
-        height: '1px',
+        height: '4px',
         background: 'transparent'
     },
     lineN: {
@@ -622,14 +628,14 @@ var styles = {
         top: '0',
         left: '0',
         width: '100%',
-        height: '1px',
+        height: '4px',
         background: 'transparent'
     },
     lineE: {
         cursor: 'e-resize',
         right: '0',
         top: '0',
-        width: '1px',
+        width: '4px',
         height: '100%',
         background: 'transparent'
     },
@@ -637,7 +643,7 @@ var styles = {
         cursor: 'w-resize',
         left: '0',
         top: '0',
-        width: '1px',
+        width: '4px',
         height: '100%',
         background: 'transparent'
     }
