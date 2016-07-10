@@ -75,8 +75,7 @@ const Cropper = React.createClass({
             let {frameWidth, frameHeight} = this.state;
 
 
-            if(selectionNatural)
-            {
+            if (selectionNatural) {
                 let img = ReactDOM.findDOMNode(this.refs.img);
                 const _rateWidth = img_width / img.naturalWidth;
                 const _rateHeight = img_height / img.naturalHeight;
@@ -92,7 +91,6 @@ const Cropper = React.createClass({
 
                 this.setState({frameWidth: frameWidth, frameHeight: frameHeight, originX: originX, originY: originY});
             }
-
 
 
             const maxLeft = img_width - frameWidth;
@@ -115,11 +113,8 @@ const Cropper = React.createClass({
     },
 
     calcPosition(width, height, left, top, move){
-        const frameNode = ReactDOM.findDOMNode(this.refs.frameNode);
-        const cloneImg = ReactDOM.findDOMNode(this.refs.cloneImg);
         const {img_width, img_height, fixedRatio} = this.state;
-        const {src, disabled, rate} = this.props;
-
+        const {rate} = this.props;
 
         if (width < 0 || height < 0) return false;
         if (fixedRatio) {
@@ -194,16 +189,8 @@ const Cropper = React.createClass({
         var that = this;
         setTimeout(function () {
             let img = ReactDOM.findDOMNode(that.refs.img);
-            let naturalWidth = img.naturalWidth;
-            if (naturalWidth) {
-                let naturalHeight = img.naturalHeight;
-                const {frameWidth, frameHeight, originX, originY, img_width, img_height, beforeImageLoaded} = that.state;
-                const _rateWidth = naturalWidth / img_width;
-                const _rateHeight = naturalHeight / img_height;
-                const realWidth = parseInt(frameWidth * _rateWidth);
-                const realHeight = parseInt(frameHeight * _rateHeight);
-                const realX = parseInt(originX * _rateHeight);
-                const realY = parseInt(originY * _rateWidth);
+            if (img.naturalWidth) {
+                const {beforeImageLoaded} = that.state;
 
                 that.setState({
                     img_height: img.offsetHeight,
@@ -393,8 +380,7 @@ const Cropper = React.createClass({
         let img = ReactDOM.findDOMNode(this.refs.img);
         let _return = null;
 
-        if(selectionNatural)
-        {
+        if (selectionNatural) {
             const _rateWidth = img.naturalWidth / img_width;
             const _rateHeight = img.naturalHeight / img_height;
             const realWidth = parseInt(frameWidth * _rateWidth);
@@ -403,8 +389,7 @@ const Cropper = React.createClass({
             const realY = parseInt(originY * _rateWidth);
             _return = {width: realWidth, height: realHeight, x: realX, y: realY};
         }
-        else
-        {
+        else {
             _return = {width: frameWidth, height: frameHeight, x: originX, y: originY};
         }
 
@@ -752,7 +737,7 @@ var defaultStyles = {
         background: 'transparent'
     }
 
-}
+};
 
 
-module.exports = Cropper
+module.exports = Cropper;
