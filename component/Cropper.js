@@ -29,8 +29,10 @@ const Cropper = React.createClass({
             originX: 0,
             originY: 0,
             styles: {},
-            imageLoaded: function () {},
-            beforeImageLoaded: function () {}
+            imageLoaded: function () {
+            },
+            beforeImageLoaded: function () {
+            }
         };
     },
     getInitialState() {
@@ -362,7 +364,6 @@ const Cropper = React.createClass({
 
     crop(){
         const {frameWidth, frameHeight, originX, originY, img_width} = this.state;
-        const {src} = this.props;
         let canvas = document.createElement('canvas');
         let img = ReactDOM.findDOMNode(this.refs.img);
         const _rate = img.naturalWidth / img_width;
@@ -398,16 +399,12 @@ const Cropper = React.createClass({
     },
 
     render() {
-        let className = ['_cropper'];
         const {imgLoaded, dragging, img_height, img_width, imgBeforeLoaded} = this.state;
         const {src, disabled} = this.props;
 
-        if (imgLoaded) className.push('_loaded');
-        if (dragging) className.push('_dragging');
-        className = className.join(' ');
-        if (disabled) className = '_cropper _disabled';
         const imageNode = <div style={this.state.styles.source} ref="sourceNode">
-            <img src={src} style={deepExtend({}, this.state.styles.img, this.state.styles.source_img)} crossOrigin
+            <img src={src} style={deepExtend({}, this.state.styles.img, this.state.styles.source_img)}
+                 crossOrigin
                  ref='img'
                  onLoad={this.imgOnLoad}
                  width={img_width} height={img_height}/>
@@ -416,16 +413,21 @@ const Cropper = React.createClass({
         let node = null;
 
         if (disabled) {
-            node = <div className={className} ref='container' style={{'position': 'relative', 'height': img_height}}>
+            node = <div ref='container' style={deepExtend({}, this.state.styles.container, {
+                'position': 'relative',
+                'height': img_height
+            })}>
                 {imageNode}
                 <div style={deepExtend({}, this.state.styles.modal, this.state.styles.modal_disabled)}></div>
             </div>;
         }
         else {
-            node = <div className={className}
-                        ref="container"
+            node = <div ref="container"
                         onMouseDown={this.handleDragStart} onTouchStart={this.handleDragStart}
-                        style={{'position': 'relative', 'height': img_height}}>
+                        style={deepExtend({}, this.state.styles.container, {
+                            'position': 'relative',
+                            'height': img_height
+                        })}>
                 {imageNode}
                 {imgBeforeLoaded ?
                     <div>
@@ -455,7 +457,7 @@ const Cropper = React.createClass({
                                      crossOrigin ref="cloneImg" width={img_width}
                                      height={img_height}/>
                             </div>
-                            <span className="_move" style={this.state.styles.move} data-action='move'></span>
+                            <span style={this.state.styles.move} data-action='move'></span>
                             <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotCenter)}
                                   data-action='move'>
                                <span
@@ -503,17 +505,13 @@ const Cropper = React.createClass({
                                <span
                                    style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerSW)}></span>
                            </span>
-                            <span className="_line _line-n"
-                                  style={deepExtend({}, this.state.styles.line, this.state.styles.lineN)}
+                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineN)}
                                   data-action="n"></span>
-                            <span className="_line _line-s"
-                                  style={deepExtend({}, this.state.styles.line, this.state.styles.lineS)}
+                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineS)}
                                   data-action="s"></span>
-                            <span className="_line _line-w"
-                                  style={deepExtend({}, this.state.styles.line, this.state.styles.lineW)}
+                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineW)}
                                   data-action="w"></span>
-                            <span className="_line _line-e"
-                                  style={deepExtend({}, this.state.styles.line, this.state.styles.lineE)}
+                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineE)}
                                   data-action="e"></span>
                         </div>
                     </div>
@@ -531,15 +529,21 @@ const Cropper = React.createClass({
 });
 
 var defaultStyles = {
+
+    container: {
+
+    },
+
     img: {
         userDrag: 'none',
         userSelect: 'none',
         MozUserSelect: 'none',
         WebkitUserDrag: 'none',
         WebkitUserSelect: 'none',
-        msUserSelect: 'none'
+        WebkitTransform: 'translateZ(0)',
+        WebkitPerspective: '1000',
+        WebkitBackfaceVisibility: 'hidden'
     },
-
 
     clone: {
         width: '100%',
