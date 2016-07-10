@@ -10,25 +10,31 @@ const Cropper = React.createClass({
         rate: React.PropTypes.number,
         width: React.PropTypes.number,
         height: React.PropTypes.number,
+        selectionNatural: React.PropTypes.bool,
         fixedRatio: React.PropTypes.bool,
         allowNewSelection: React.PropTypes.bool,
         disabled: React.PropTypes.bool,
-        styles: React.PropTypes.object
+        styles: React.PropTypes.object,
+        imageLoaded: React.PropTypes.function,
+        beforeImageLoaded: React.PropTypes.function
     },
     getDefaultProps() {
         return {
             width: 200,
             height: 200,
+            selectionNatural: false,
             fixedRatio: true,
             allowNewSelection: true,
             rate: 1,
             originX: 0,
             originY: 0,
-            styles: {}
+            styles: {},
+            imageLoaded: function () {},
+            beforeImageLoaded: function () {}
         };
     },
     getInitialState() {
-        let {originX, originY, width, height, fixedRatio, allowNewSelection, rate, styles} = this.props;
+        let {originX, originY, width, height, selectionNatural, fixedRatio, allowNewSelection, rate, styles, imageLoaded, beforeImageLoaded} = this.props;
         return {
             img_width: '100%',
             img_height: 'auto',
@@ -41,15 +47,19 @@ const Cropper = React.createClass({
             startX: 0,
             startY: 0,
             frameWidth: width,
-            fixedRatio: fixedRatio,
-            allowNewSelection: allowNewSelection,
+            fixedRatio,
+            selectionNatural,
+            allowNewSelection,
             frameHeight: fixedRatio ? (width / rate) : height,
             dragging: false,
             maxLeft: 0,
             maxTop: 0,
             action: null,
             imgLoaded: false,
-            styles: deepExtend({}, defaultStyles, styles)
+            imgBeforeLoaded: false,
+            styles: deepExtend({}, defaultStyles, styles),
+            imageLoaded,
+            beforeImageLoaded
         };
     },
 
@@ -61,7 +71,30 @@ const Cropper = React.createClass({
             // calc frame width height
             let {originX, originY, disabled} = this.props;
             if (disabled) return;
-            const {img_width, img_height, frameWidth, frameHeight} = this.state;
+            const {img_width, img_height, selectionNatural} = this.state;
+            let {frameWidth, frameHeight} = this.state;
+
+
+            if(selectionNatural)
+            {
+                let img = ReactDOM.findDOMNode(this.refs.img);
+                const _rateWidth = img_width / img.naturalWidth;
+                const _rateHeight = img_height / img.naturalHeight;
+                const realWidth = parseInt(frameWidth * _rateWidth);
+                const realHeight = parseInt(frameHeight * _rateHeight);
+                const realX = parseInt(originX * _rateHeight);
+                const realY = parseInt(originY * _rateWidth);
+
+                frameWidth = realWidth;
+                frameHeight = realHeight;
+                originX = realX;
+                originY = realY;
+
+                this.setState({frameWidth: frameWidth, frameHeight: frameHeight, originX: originX, originY: originY});
+            }
+
+
+
             const maxLeft = img_width - frameWidth;
             const maxTop = img_height - frameHeight;
 
@@ -74,7 +107,7 @@ const Cropper = React.createClass({
                 this.setState({originY});
             }
 
-            this.setState({maxLeft, maxTop, imgLoaded: true});
+            this.setState({maxLeft, maxTop});
             // calc clone position
             this.calcPosition(frameWidth, frameHeight, originX, originY);
 
@@ -151,11 +184,40 @@ const Cropper = React.createClass({
         this.setState({imgLeft: left, imgTop: top, imgWidth: width, imgHeight: height});
     },
 
-    imgOnload(){
-        const img = ReactDOM.findDOMNode(this.refs.img)
-        this.setState({
-            img_height: img.offsetHeight
-        }, () => this.initStyles());
+    imgOnLoad(){
+        const {imageLoaded} = this.state;
+        this.setState({imgLoaded: true});
+        imageLoaded();
+    },
+
+    imgGetSizeBeforeLoad(){
+        var that = this;
+        setTimeout(function () {
+            let img = ReactDOM.findDOMNode(that.refs.img);
+            let naturalWidth = img.naturalWidth;
+            if (naturalWidth) {
+                let naturalHeight = img.naturalHeight;
+                const {frameWidth, frameHeight, originX, originY, img_width, img_height, beforeImageLoaded} = that.state;
+                const _rateWidth = naturalWidth / img_width;
+                const _rateHeight = naturalHeight / img_height;
+                const realWidth = parseInt(frameWidth * _rateWidth);
+                const realHeight = parseInt(frameHeight * _rateHeight);
+                const realX = parseInt(originX * _rateHeight);
+                const realY = parseInt(originY * _rateWidth);
+
+                that.setState({
+                    img_height: img.offsetHeight,
+                    imgBeforeLoaded: true,
+                }, () => that.initStyles());
+
+                beforeImageLoaded();
+
+            }
+            else {
+                that.imgGetSizeBeforeLoad();
+            }
+
+        }, 0)
     },
 
     createNewFrame(e){
@@ -257,6 +319,8 @@ const Cropper = React.createClass({
 
         document.addEventListener('mouseup', this.handleDragStop);
         document.addEventListener('touchend', this.handleDragStop);
+
+        this.imgGetSizeBeforeLoad();
     },
 
     componentWillUnmount(){
@@ -325,20 +389,32 @@ const Cropper = React.createClass({
     },
 
     values(){
-        const {frameWidth, frameHeight, originX, originY, img_width, img_height} = this.state;
+        const {frameWidth, frameHeight, originX, originY, img_width, img_height, selectionNatural} = this.state;
         let img = ReactDOM.findDOMNode(this.refs.img);
-        const _rateWidth = img.naturalWidth / img_width;
-        const _rateHeight = img.naturalHeight / img_height;
-        const realWidth = parseInt(frameWidth * _rateWidth);
-        const realHeight = parseInt(frameHeight * _rateHeight);
-        const realX = parseInt(originX * _rateHeight);
-        const realY = parseInt(originY * _rateWidth);
-        return {width: realWidth, height: realHeight, x: realX, y: realY};
+        let _return = null;
+
+        if(selectionNatural)
+        {
+            const _rateWidth = img.naturalWidth / img_width;
+            const _rateHeight = img.naturalHeight / img_height;
+            const realWidth = parseInt(frameWidth * _rateWidth);
+            const realHeight = parseInt(frameHeight * _rateHeight);
+            const realX = parseInt(originX * _rateHeight);
+            const realY = parseInt(originY * _rateWidth);
+            _return = {width: realWidth, height: realHeight, x: realX, y: realY};
+        }
+        else
+        {
+            _return = {width: frameWidth, height: frameHeight, x: originX, y: originY};
+        }
+
+        return _return;
+
     },
 
     render() {
         let className = ['_cropper'];
-        const {imgLoaded, dragging, img_height, img_width} = this.state;
+        const {imgLoaded, dragging, img_height, img_width, imgBeforeLoaded} = this.state;
         const {src, disabled} = this.props;
 
         if (imgLoaded) className.push('_loaded');
@@ -346,95 +422,122 @@ const Cropper = React.createClass({
         className = className.join(' ');
         if (disabled) className = '_cropper _disabled';
         const imageNode = <div style={this.state.styles.source} ref="sourceNode">
-            <img src={src} style={deepExtend({}, this.state.styles.img, this.state.styles.source_img)} crossOrigin ref='img'
-                 onLoad={this.imgOnload}
+            <img src={src} style={deepExtend({}, this.state.styles.img, this.state.styles.source_img)} crossOrigin
+                 ref='img'
+                 onLoad={this.imgOnLoad}
                  width={img_width} height={img_height}/>
         </div>;
 
-        const node = disabled ?
-            <div className={className} ref='container' style={{'position': 'relative', 'height': img_height}}>
-                 {imageNode}
-                     <div style={deepExtend({}, this.state.styles.modal, this.state.styles.modal_disabled)}></div>
-            </div>
-            : <div className={className}
-                   ref="container"
-                   onMouseDown={this.handleDragStart} onTouchStart={this.handleDragStart}
-                   style={{'position': 'relative', 'height': img_height}}>
-                   {imageNode}
-                       <div style={this.state.styles.modal}></div>
-                       <div style={
-                           deepExtend(
-                               {},
-                               this.state.styles.frame,
-                               dragging ? this.state.styles.dragging_frame : {},
-                               {
-                                   display: 'block',
-                                   left: this.state.imgLeft,
-                                   top: this.state.imgTop,
-                                   width: this.state.imgWidth,
-                                   height: this.state.imgHeight
-                               }
-                           )} ref="frameNode">
-                           <div style={this.state.styles.clone}>
-                               <img src={src} style={deepExtend(
-                                   {},
-                                   this.state.styles.img,
-                                   {
-                                       marginLeft: -this.state.imgLeft,
-                                       marginTop: -this.state.imgTop
-                                   }
-                               )}
-                                    crossOrigin ref="cloneImg" width={img_width}
-                                    height={img_height}/>
-                           </div>
-                           <span className="_move" style={this.state.styles.move} data-action='move'></span>
-                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotCenter)}
-                                 data-action='move'>
-                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerCenterVertical)}></span>
-                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerCenterHorizontal)}></span>
+        let node = null;
+
+        if (disabled) {
+            node = <div className={className} ref='container' style={{'position': 'relative', 'height': img_height}}>
+                {imageNode}
+                <div style={deepExtend({}, this.state.styles.modal, this.state.styles.modal_disabled)}></div>
+            </div>;
+        }
+        else {
+            node = <div className={className}
+                        ref="container"
+                        onMouseDown={this.handleDragStart} onTouchStart={this.handleDragStart}
+                        style={{'position': 'relative', 'height': img_height}}>
+                {imageNode}
+                {imgBeforeLoaded ?
+                    <div>
+                        <div style={this.state.styles.modal}></div>
+                        <div style={
+                            deepExtend(
+                                {},
+                                this.state.styles.frame,
+                                dragging ? this.state.styles.dragging_frame : {},
+                                {
+                                    display: 'block',
+                                    left: this.state.imgLeft,
+                                    top: this.state.imgTop,
+                                    width: this.state.imgWidth,
+                                    height: this.state.imgHeight
+                                }
+                            )} ref="frameNode">
+                            <div style={this.state.styles.clone}>
+                                <img src={src} style={deepExtend(
+                                    {},
+                                    this.state.styles.img,
+                                    {
+                                        marginLeft: -this.state.imgLeft,
+                                        marginTop: -this.state.imgTop
+                                    }
+                                )}
+                                     crossOrigin ref="cloneImg" width={img_width}
+                                     height={img_height}/>
+                            </div>
+                            <span className="_move" style={this.state.styles.move} data-action='move'></span>
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotCenter)}
+                                  data-action='move'>
+                               <span
+                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerCenterVertical)}></span>
+                               <span
+                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerCenterHorizontal)}></span>
                            </span>
-                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNE)}
-                                 data-action="ne">
-                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerNE)}></span>
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNE)}
+                                  data-action="ne">
+                               <span
+                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerNE)}></span>
                            </span>
-                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotN)}
-                                 data-action="n">
-                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerN)}></span>
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotN)}
+                                  data-action="n">
+                               <span
+                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerN)}></span>
                            </span>
-                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNW)}
-                                 data-action="nw">
-                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerNW)}></span>
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNW)}
+                                  data-action="nw">
+                               <span
+                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerNW)}></span>
                            </span>
-                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotE)}
-                                 data-action="e">
-                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerE)}></span>
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotE)}
+                                  data-action="e">
+                               <span
+                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerE)}></span>
                            </span>
-                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotW)}
-                                 data-action="w">
-                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerW)}></span>
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotW)}
+                                  data-action="w">
+                               <span
+                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerW)}></span>
                            </span>
-                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSE)}
-                                 data-action="se">
-                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerSE)}></span>
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSE)}
+                                  data-action="se">
+                               <span
+                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerSE)}></span>
                            </span>
-                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotS)}
-                                 data-action="s">
-                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerS)}></span>
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotS)}
+                                  data-action="s">
+                               <span
+                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerS)}></span>
                            </span>
-                           <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSW)}
-                                 data-action="sw">
-                               <span style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerSW)}></span>
+                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSW)}
+                                  data-action="sw">
+                               <span
+                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerSW)}></span>
                            </span>
-                           <span className="_line _line-n" style={deepExtend({}, this.state.styles.line, this.state.styles.lineN)}
-                                 data-action="n"></span>
-                           <span className="_line _line-s" style={deepExtend({}, this.state.styles.line, this.state.styles.lineS)}
-                                 data-action="s"></span>
-                           <span className="_line _line-w" style={deepExtend({}, this.state.styles.line, this.state.styles.lineW)}
-                                 data-action="w"></span>
-                           <span className="_line _line-e" style={deepExtend({}, this.state.styles.line, this.state.styles.lineE)}
-                                 data-action="e"></span>
-                       </div>
-        </div>;
+                            <span className="_line _line-n"
+                                  style={deepExtend({}, this.state.styles.line, this.state.styles.lineN)}
+                                  data-action="n"></span>
+                            <span className="_line _line-s"
+                                  style={deepExtend({}, this.state.styles.line, this.state.styles.lineS)}
+                                  data-action="s"></span>
+                            <span className="_line _line-w"
+                                  style={deepExtend({}, this.state.styles.line, this.state.styles.lineW)}
+                                  data-action="w"></span>
+                            <span className="_line _line-e"
+                                  style={deepExtend({}, this.state.styles.line, this.state.styles.lineE)}
+                                  data-action="e"></span>
+                        </div>
+                    </div>
+                    :
+                    null
+                }
+            </div>;
+        }
+
 
         return (
             node
@@ -536,7 +639,8 @@ var defaultStyles = {
         cursor: 'se-resize'
     },
     dotCenter: {
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
+        cursor: 'move'
     },
 
     dotInner: {
@@ -595,7 +699,7 @@ var defaultStyles = {
         top: '50%',
         left: '50%',
         marginLeft: '-1px',
-        marginTop: '-4px'
+        marginTop: '-4px',
     },
     dotInnerCenterHorizontal: {
         position: 'absolute',
