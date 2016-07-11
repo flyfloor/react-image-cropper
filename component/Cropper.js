@@ -324,7 +324,7 @@ const Cropper = React.createClass({
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY;
         const {rate} = this.props;
-        const {startX, startY, originX, originY, frameWidth, frameHeight, img_width, img_height, fixedRatio} = this.state;
+        const {startX, startY, originX, originY, frameWidth, frameHeight, fixedRatio} = this.state;
 
         if (pageY !== 0 && pageX !== 0) {
             const _x = pageX - startX;
@@ -399,7 +399,7 @@ const Cropper = React.createClass({
     },
 
     render() {
-        const {imgLoaded, dragging, img_height, img_width, imgBeforeLoaded} = this.state;
+        const {dragging, img_height, img_width, imgBeforeLoaded} = this.state;
         const {src, disabled} = this.props;
 
         const imageNode = <div style={this.state.styles.source} ref="sourceNode">
