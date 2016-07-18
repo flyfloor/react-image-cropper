@@ -541,7 +541,7 @@ var defaultStyles = {
         WebkitUserDrag: 'none',
         WebkitUserSelect: 'none',
         WebkitTransform: 'translateZ(0)',
-        WebkitPerspective: '1000',
+        WebkitPerspective: 1000,
         WebkitBackfaceVisibility: 'hidden'
     },
 
@@ -550,21 +550,21 @@ var defaultStyles = {
         height: '100%',
         overflow: 'hidden',
         position: 'absolute',
-        left: '0',
-        top: '0'
+        left: 0,
+        top: 0
     },
 
     frame: {
         position: 'absolute',
-        left: '0',
-        top: '0',
-        bottom: '0',
-        right: '0',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        right: 0,
         display: 'none'
     },
 
     dragging_frame: {
-        opacity: '.8'
+        opacity: .8
     },
 
     source: {
@@ -577,10 +577,10 @@ var defaultStyles = {
 
     modal: {
         position: 'absolute',
-        left: '0',
-        top: '0',
-        bottom: '0',
-        right: '0',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        right: 0,
         opacity: .4,
         backgroundColor: '#222'
     },
@@ -591,17 +591,17 @@ var defaultStyles = {
     },
     move: {
         position: 'absolute',
-        left: '0',
-        top: '0',
-        bottom: '0',
-        right: '0',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        right: 0,
         cursor: 'move',
         outline: '1px dashed #88f',
         backgroundColor: 'transparent'
     },
 
     dot: {
-        zIndex: '10'
+        zIndex: 10
     },
     dotN: {
         cursor: 'n-resize'
@@ -636,107 +636,107 @@ var defaultStyles = {
         border: '1px solid #88f',
         background: '#fff',
         display: 'block',
-        width: '6px',
-        height: '6px',
-        padding: '0',
-        margin: '0',
+        width: 6,
+        height: 6,
+        padding: 0,
+        margin: 0,
         position: 'absolute'
     },
 
     dotInnerN: {
-        top: '-4px',
+        top: -4,
         left: '50%',
-        marginLeft: '-4px'
+        marginLeft: -4
     },
     dotInnerS: {
-        bottom: '-4px',
+        bottom: -4,
         left: '50%',
-        marginLeft: '-4px'
+        marginLeft: -4
     },
     dotInnerE: {
-        right: '-4px',
+        right: -4,
         top: '50%',
-        marginTop: '-4px'
+        marginTop: -4
     },
     dotInnerW: {
-        left: '-4px',
+        left: -4,
         top: '50%',
-        marginTop: '-4px'
+        marginTop: -4
     },
     dotInnerNE: {
-        top: '-4px',
-        right: '-4px'
+        top: -4,
+        right: -4
     },
     dotInnerSE: {
-        bottom: '-4px',
-        right: '-4px'
+        bottom: -4,
+        right: -4
     },
     dotInnerNW: {
-        top: '-4px',
-        left: '-4px'
+        top: -4,
+        left: -4
     },
     dotInnerSW: {
-        bottom: '-4px',
-        left: '-4px'
+        bottom: -4,
+        left: -4
     },
     dotInnerCenterVertical: {
         position: 'absolute',
         border: 'none',
-        width: '2px',
-        height: '8px',
+        width: 2,
+        height: 8,
         backgroundColor: '#88f',
         top: '50%',
         left: '50%',
-        marginLeft: '-1px',
-        marginTop: '-4px',
+        marginLeft: -1,
+        marginTop: -4,
     },
     dotInnerCenterHorizontal: {
         position: 'absolute',
         border: 'none',
-        width: '8px',
-        height: '2px',
+        width: 8,
+        height: 2,
         backgroundColor: '#88f',
         top: '50%',
         left: '50%',
-        marginLeft: '-4px',
-        marginTop: '-1px'
+        marginLeft: -4,
+        marginTop: -1
     },
 
     line: {
         position: 'absolute',
         display: 'block',
-        zIndex: '100'
+        zIndex: 100
     },
 
     lineS: {
         cursor: 's-resize',
-        bottom: '0',
-        left: '0',
+        bottom: 0,
+        left: 0,
         width: '100%',
-        height: '4px',
+        height: 4,
         background: 'transparent'
     },
     lineN: {
         cursor: 'n-resize',
-        top: '0',
-        left: '0',
+        top: 0,
+        left: 0,
         width: '100%',
-        height: '4px',
+        height: 4,
         background: 'transparent'
     },
     lineE: {
         cursor: 'e-resize',
-        right: '0',
-        top: '0',
-        width: '4px',
+        right: 0,
+        top: 0,
+        width: 4,
         height: '100%',
         background: 'transparent'
     },
     lineW: {
         cursor: 'w-resize',
-        left: '0',
-        top: '0',
-        width: '4px',
+        left: 0,
+        top: 0,
+        width: 4,
         height: '100%',
         background: 'transparent'
     }

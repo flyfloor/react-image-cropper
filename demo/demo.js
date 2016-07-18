@@ -12,7 +12,7 @@ const ImageCropDemo = React.createClass({
             imageL1oaded: false,
             image2: '',
             image2Loaded: false,
-            image3: '',
+            image3: '',WebkitPerspective
             image3Loaded: false,
             image4: '',
             image4Loaded: false,
