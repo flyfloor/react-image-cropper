@@ -114,6 +114,13 @@ const Cropper = React.createClass({
         });
     },
 
+    updateFrame(newWidth, newHeight, newOriginX, newOriginY)
+    {
+        this.setState({frameWidth: newWidth, frameHeight: newHeight, originX: newOriginX, originY: newOriginY}, () => {
+            this.initStyles();
+        });
+    },
+
     calcPosition(width, height, left, top, move){
         const {img_width, img_height, fixedRatio} = this.state;
         const {rate} = this.props;
@@ -318,6 +325,19 @@ const Cropper = React.createClass({
 
         document.removeEventListener('mouseup', this.handleDragStop);
         document.removeEventListener('touchend', this.handleDragStop);
+    },
+
+    componentWillReceiveProps(newProps)
+    {
+        var width = this.props.width !== newProps.width;
+        var height = this.props.height !== newProps.height;
+        var originX = this.props.originX !== newProps.originX;
+        var originY = this.props.originY !== newProps.originY;
+
+        if(width || height || originX || originY)
+        {
+            this.updateFrame(newProps.width, newProps.height, newProps.offsetX, newProps.offsetY);
+        }
     },
 
     frameDotMove(dir, e){
