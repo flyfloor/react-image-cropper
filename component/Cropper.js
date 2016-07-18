@@ -331,7 +331,6 @@ const Cropper = React.createClass({
             const _y = pageY - startY;
             let new_width = frameWidth + _x;
             let new_height = fixedRatio ? new_width : (frameHeight + _y);
-            console.log(dir);
             switch (dir) {
                 case 'ne':
                     new_height = frameHeight - _y;
