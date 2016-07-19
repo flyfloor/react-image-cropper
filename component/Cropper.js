@@ -198,7 +198,7 @@ const Cropper = React.createClass({
         var that = this;
         setTimeout(function () {
             let img = ReactDOM.findDOMNode(that.refs.img);
-            if (img.naturalWidth) {
+            if (img && img.naturalWidth) {
                 const {beforeImageLoaded} = that.state;
 
                 that.setState({
@@ -209,7 +209,7 @@ const Cropper = React.createClass({
                 beforeImageLoaded();
 
             }
-            else {
+            else if(img) {
                 that.imgGetSizeBeforeLoad();
             }
 
