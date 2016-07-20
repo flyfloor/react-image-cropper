@@ -201,8 +201,11 @@ const Cropper = React.createClass({
             if (img && img.naturalWidth) {
                 const {beforeImageLoaded} = that.state;
 
+                var heightRatio = img.offsetWidth / img.naturalWidth;
+                var height = parseInt(img.naturalHeight * heightRatio);
+
                 that.setState({
-                    img_height: img.offsetHeight,
+                    img_height: height,
                     imgBeforeLoaded: true,
                 }, () => that.initStyles());
 
