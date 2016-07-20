@@ -422,7 +422,7 @@ const Cropper = React.createClass({
 
         const imageNode = <div style={this.state.styles.source} ref="sourceNode">
             <img src={src} style={deepExtend({}, this.state.styles.img, this.state.styles.source_img)}
-                 crossOrigin
+                 crossOrigin="anonymous"
                  ref='img'
                  onLoad={this.imgOnLoad}
                  width={img_width} height={img_height}/>
@@ -472,7 +472,7 @@ const Cropper = React.createClass({
                                         marginTop: -this.state.imgTop
                                     }
                                 )}
-                                     crossOrigin ref="cloneImg" width={img_width}
+                                     crossOrigin="anonymous" ref="cloneImg" width={img_width}
                                      height={img_height}/>
                             </div>
                             <span style={this.state.styles.move} data-action='move'></span>
