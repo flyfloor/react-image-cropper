@@ -61,7 +61,12 @@ const Cropper = React.createClass({
             imgBeforeLoaded: false,
             styles: deepExtend({}, defaultStyles, styles),
             imageLoaded,
-            beforeImageLoaded
+            beforeImageLoaded,
+            moved: false,
+            originalOriginX: originX,
+            originalOriginY: originY,
+            originalFrameWidth: width,
+            originalFrameHeight: fixedRatio ? width / rate : height,
         };
     },
 
@@ -260,6 +265,11 @@ const Cropper = React.createClass({
         let _x = pageX - startX + originX;
         let _y = pageY - startY + originY;
         if (pageX < 0 || pageY < 0) return false;
+
+        if ((pageX - startX) > 0 || (pageY - startY)) {
+            this.setState({moved: true});
+        }
+
         if (_x > maxLeft) _x = maxLeft;
         if (_y > maxTop) _y = maxTop;
         this.calcPosition(frameWidth, frameHeight, _x, _y, true);
@@ -286,7 +296,8 @@ const Cropper = React.createClass({
                 offsetLeft: pageX - offsetLeft,
                 offsetTop: pageY - offsetTop,
                 frameWidth: 2,
-                frameHeight: 2
+                frameHeight: 2,
+                moved: true
             }, () => {
                 this.calcPosition(2, 2, pageX - offsetLeft, pageY - offsetTop);
             });
@@ -351,6 +362,11 @@ const Cropper = React.createClass({
         if (pageY !== 0 && pageX !== 0) {
             const _x = pageX - startX;
             const _y = pageY - startY;
+
+            if ((pageX - startX) > 0 || (pageY - startY)) {
+                this.setState({moved: true});
+            }
+
             let new_width = frameWidth + _x;
             let new_height = fixedRatio ? new_width : (frameHeight + _y);
             switch (dir) {
@@ -398,21 +414,27 @@ const Cropper = React.createClass({
     },
 
     values(){
-        const {frameWidth, frameHeight, originX, originY, img_width, img_height, selectionNatural} = this.state;
+        const {frameWidth, frameHeight, originX, originY, img_width, img_height, selectionNatural, moved, originalOriginX, originalOriginY, originalFrameWidth, originalFrameHeight} = this.state;
+
         let img = ReactDOM.findDOMNode(this.refs.img);
         let _return = null;
 
-        if (selectionNatural) {
+        var thisOriginX = moved ? originX: originalOriginX;
+        var thisOriginY = moved ? originY: originalOriginY;
+        var thisFrameWidth = moved ? frameWidth: originalFrameWidth;
+        var thisFrameHeight = moved ? frameHeight: originalFrameHeight;
+
+        if (selectionNatural && moved) {
             const _rateWidth = img.naturalWidth / img_width;
             const _rateHeight = img.naturalHeight / img_height;
-            const realWidth = parseInt(frameWidth * _rateWidth);
-            const realHeight = parseInt(frameHeight * _rateHeight);
-            const realX = parseInt(originX * _rateHeight);
-            const realY = parseInt(originY * _rateWidth);
+            const realWidth = parseInt(thisFrameWidth * _rateWidth);
+            const realHeight = parseInt(thisFrameHeight * _rateHeight);
+            const realX = parseInt(thisOriginX * _rateHeight);
+            const realY = parseInt(thisOriginY * _rateWidth);
             _return = {width: realWidth, height: realHeight, x: realX, y: realY};
         }
         else {
-            _return = {width: frameWidth, height: frameHeight, x: originX, y: originY};
+            _return = {width: thisFrameWidth, height: thisFrameHeight, x: thisOriginX, y: thisOriginY};
         }
 
         return _return;
