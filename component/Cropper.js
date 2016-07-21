@@ -121,7 +121,16 @@ const Cropper = React.createClass({
 
     updateFrame(newWidth, newHeight, newOriginX, newOriginY)
     {
-        this.setState({frameWidth: newWidth, frameHeight: newHeight, originX: newOriginX, originY: newOriginY}, () => {
+        this.setState({
+            frameWidth: newWidth,
+            frameHeight: newHeight,
+            originX: newOriginX,
+            originY: newOriginY,
+            originalFrameWidth: newWidth,
+            originalFrameHeight: newHeight,
+            originalOriginX: newOriginX,
+            originalOriginY: newOriginY
+        }, () => {
             this.initStyles();
         });
     },
@@ -419,10 +428,10 @@ const Cropper = React.createClass({
         let img = ReactDOM.findDOMNode(this.refs.img);
         let _return = null;
 
-        var thisOriginX = moved ? originX: originalOriginX;
-        var thisOriginY = moved ? originY: originalOriginY;
-        var thisFrameWidth = moved ? frameWidth: originalFrameWidth;
-        var thisFrameHeight = moved ? frameHeight: originalFrameHeight;
+        var thisOriginX = moved ? originX : originalOriginX;
+        var thisOriginY = moved ? originY : originalOriginY;
+        var thisFrameWidth = moved ? frameWidth : originalFrameWidth;
+        var thisFrameHeight = moved ? frameHeight : originalFrameHeight;
 
         if (selectionNatural && moved) {
             const _rateWidth = img.naturalWidth / img_width;
