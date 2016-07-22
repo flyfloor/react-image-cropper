@@ -358,7 +358,7 @@ const Cropper = React.createClass({
         var originY = this.props.originY !== newProps.originY;
 
         if (width || height || originX || originY) {
-            this.updateFrame(newProps.width, newProps.height, newProps.offsetX, newProps.offsetY);
+            this.updateFrame(newProps.width, newProps.height, newProps.originX, newProps.originY);
         }
     },
 
