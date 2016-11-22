@@ -3,7 +3,8 @@
 [![Downloads](https://img.shields.io/npm/dt/react-image-cropper.svg)](https://www.npmjs.com/package/react-image-cropper)
 [![Version](https://img.shields.io/npm/v/react-image-cropper.svg)](https://www.npmjs.com/package/react-image-cropper)
 
-A image cropper, use React.js
+A React.JS Image Cropper
+Touch supported
 
 **[See the demo](http://braavos.me/react-image-cropper/)**
 
@@ -17,7 +18,7 @@ Custom:
 
 + `import {Cropper} from 'react-image-cropper'`
 
-+ `import style from 'react-image-cropper/css/cropper.less'`
++ styles are all inline
 
 + define Cropper with src, and ref to execute crop method  
 
@@ -29,14 +30,25 @@ Custom:
 
 `image.src = this.refs.cropper.crop()`
 
-+ costom use
++ get crop values
+
+`var values = this.refs.cropper.values()`
+
++ custom use
 
 | prop  |  value   |
 |:-------:|:--------|
 | rate | width / height |
 | width | cropper frame width |
+| height | cropper frame height |
 | originX | cropper original position(x axis)|
 | originY | cropper original position(Y axis)|
+| selectionNaural | cropper frame sizes and position are relative to the image's natural size (bool default false) |
+| fixedRatio | turn on/off fixed ratio (bool default true) |
+| allowNewSelection | allow user to create a new selection instead of reusing initial selection (bool default true) |
+| styles | specify styles to override inline styles |
+| imageLoaded | specify fuction callback to run when the image completed loading |
+| beforeImageLoaded | specify function callback to run when the image size value is ready but image is not completed loading |
 
 
 **[See the demo](http://braavos.me/react-image-cropper/)**
