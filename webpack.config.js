@@ -1,7 +1,8 @@
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var publicPath = process.env.NODE_ENV === 'dev' ? '/dist/' : '';
+var NODE_ENV = process.env.NODE_ENV;
+var publicPath = NODE_ENV === 'dev' ? '/dist/' : '';
 
 module.exports = {
 
@@ -15,6 +16,11 @@ module.exports = {
         new webpack.optimize.OccurenceOrderPlugin(),
         // new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin(),
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify(NODE_ENV)
+            }
+        }),
         // new webpack.optimize.UglifyJsPlugin({
         //     sourceMap: false,
         //     mangle: false

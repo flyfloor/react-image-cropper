@@ -48,7 +48,7 @@ const ImageCropDemo = React.createClass({
     },
 
     render() {
-        const src = "demo.jpg";
+        const src = "http://braavos.me/react-image-cropper/dist/demo.jpg";
         return (
             <ul>
                 <li>
