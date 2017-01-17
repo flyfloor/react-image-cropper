@@ -408,17 +408,31 @@ const Cropper = React.createClass({
         }
     },
 
-    crop(){
+    crop({
+      maxWidth: _maxWidth,
+      maxHeight: _maxHeight
+    }){
         const {frameWidth, frameHeight, originX, originY, img_width} = this.state;
         let canvas = document.createElement('canvas');
         let img = ReactDOM.findDOMNode(this.refs.img);
         const _rate = img.naturalWidth / img_width;
         const realWidth = frameWidth * _rate;
         const realHeight = frameHeight * _rate;
-        canvas.width = realWidth;
-        canvas.height = realHeight;
 
-        canvas.getContext("2d").drawImage(img, originX * _rate, originY * _rate, realWidth, realHeight, 0, 0, realWidth, realHeight);
+        const maxWidth = _maxWidth || realWidth;
+        const maxHeight = _maxHeight || realHeight;
+
+        const squeezeRatio = maxWidth / realWidth;
+        const flattenRatio = maxHeight / realHeight;
+        const scaleRatio = Math.min(squeezeRatio, flattenRatio);
+
+        const finalWidth = scaleRatio * realWidth;
+        const finalHeight = scaleRatio * realHeight;
+
+        canvas.width = finalWidth;
+        canvas.height = finalHeight;
+
+        canvas.getContext("2d").drawImage(img, originX * _rate, originY * _rate, realWidth, realHeight, 0, 0, finalWidth, finalHeight);
         return canvas.toDataURL();
     },
 
