@@ -411,7 +411,7 @@ const Cropper = React.createClass({
     crop({
       maxWidth: _maxWidth,
       maxHeight: _maxHeight
-    }){
+    } = {}){
         const {frameWidth, frameHeight, originX, originY, img_width} = this.state;
         let canvas = document.createElement('canvas');
         let img = ReactDOM.findDOMNode(this.refs.img);
