@@ -30,6 +30,12 @@ Custom:
 
 `image.src = this.refs.cropper.crop()`
 
+OPTIONS:
+- maxHeight : make sure the cropped image is not bigger than this max height
+- maxWidth : make sure the cropped image is not bigger than this max width
+
+`image.src = this.refs.cropper.crop({ maxWidth: 1024 })`
+
 + get crop values
 
 `var values = this.refs.cropper.values()`
