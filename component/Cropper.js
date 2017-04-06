@@ -16,7 +16,8 @@ const Cropper = React.createClass({
         disabled: React.PropTypes.bool,
         styles: React.PropTypes.object,
         imageLoaded: React.PropTypes.function,
-        beforeImageLoaded: React.PropTypes.function
+        beforeImageLoaded: React.PropTypes.function,
+        onChange: React.PropTypes.function
     },
     getDefaultProps() {
         return {
@@ -32,6 +33,8 @@ const Cropper = React.createClass({
             imageLoaded: function () {
             },
             beforeImageLoaded: function () {
+            },
+            onChange: function () {
             }
         };
     },
@@ -329,6 +332,7 @@ const Cropper = React.createClass({
                 maxTop: img_height - offsetHeight,
                 action: null
             });
+            this.props.onChange(this.values());
         }
     },
 
