@@ -332,7 +332,7 @@ const Cropper = React.createClass({
                 maxTop: img_height - offsetHeight,
                 action: null
             });
-            this.props.onChange();
+            this.props.onChange(this.values());
         }
     },
 

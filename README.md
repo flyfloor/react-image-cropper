@@ -55,6 +55,7 @@ OPTIONS:
 | styles | specify styles to override inline styles |
 | imageLoaded | specify fuction callback to run when the image completed loading |
 | beforeImageLoaded | specify function callback to run when the image size value is ready but image is not completed loading |
+| onChange | specify function callback to run when the crop frame is resized or dragged receiving an object with updated values as argument |
 
 
 **[See the demo](http://braavos.me/react-image-cropper/)**
