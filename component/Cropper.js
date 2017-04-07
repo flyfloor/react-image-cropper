@@ -36,7 +36,7 @@ const Cropper = React.createClass({
         };
     },
     getInitialState() {
-        let {originX, originY, width, height, selectionNatural, fixedRatio, allowNewSelection, rate, styles, imageLoaded} = this.props;
+        let {originX, originY, width, height, selectionNatural, fixedRatio, rate, styles, imageLoaded} = this.props;
         return {
             img_width: '100%',
             img_height: 'auto',
@@ -51,7 +51,6 @@ const Cropper = React.createClass({
             frameWidth: width,
             fixedRatio,
             selectionNatural,
-            allowNewSelection,
             frameHeight: fixedRatio ? (width / rate) : height,
             dragging: false,
             maxLeft: 0,
@@ -285,7 +284,7 @@ const Cropper = React.createClass({
     },
 
     handleDragStart(e){
-        const {allowNewSelection} = this.state;
+        const {allowNewSelection} = this.props;
         const action = e.target.getAttribute('data-action') ? e.target.getAttribute('data-action') : e.target.parentNode.getAttribute('data-action');
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY;
@@ -602,10 +601,8 @@ const Cropper = React.createClass({
     }
 });
 
-var defaultStyles = {
-
+let defaultStyles = {
     container: {},
-
     img: {
         userDrag: 'none',
         userSelect: 'none',
