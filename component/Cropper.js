@@ -465,14 +465,14 @@ const Cropper = React.createClass({
     },
 
     render() {
-        const {dragging, img_height, img_width, imgBeforeLoaded} = this.state;
+        const {dragging, img_height, img_width, imgBeforeLoaded, styles} = this.state;
         const {src, disabled} = this.props;
 
-        const imageNode = <div style={this.state.styles.source} ref="sourceNode">
+        const imageNode = <div style={styles.source} ref="sourceNode">
             <img
                 crossOrigin="anonymous"
                 src={src}
-                style={deepExtend({}, this.state.styles.img, this.state.styles.source_img)}
+                style={deepExtend({}, styles.img, styles.source_img)}
                 ref='img'
                 onLoad={this.imgOnLoad}
                 width={img_width} height={img_height}
@@ -482,30 +482,30 @@ const Cropper = React.createClass({
         let node = null;
 
         if (disabled) {
-            node = <div ref='container' style={deepExtend({}, this.state.styles.container, {
+            node = <div ref='container' style={deepExtend({}, styles.container, {
                 'position': 'relative',
                 'height': img_height
             })}>
                 {imageNode}
-                <div style={deepExtend({}, this.state.styles.modal, this.state.styles.modal_disabled)}></div>
+                <div style={deepExtend({}, styles.modal, styles.modal_disabled)}></div>
             </div>;
         }
         else {
             node = <div ref="container"
                         onMouseDown={this.handleDragStart} onTouchStart={this.handleDragStart}
-                        style={deepExtend({}, this.state.styles.container, {
+                        style={deepExtend({}, styles.container, {
                             'position': 'relative',
                             'height': img_height
                         })}>
                 {imageNode}
                 {imgBeforeLoaded ?
                     <div>
-                        <div style={this.state.styles.modal}></div>
+                        <div style={styles.modal}></div>
                         <div style={
                             deepExtend(
                                 {},
-                                this.state.styles.frame,
-                                dragging ? this.state.styles.dragging_frame : {},
+                                styles.frame,
+                                dragging ? styles.dragging_frame : {},
                                 {
                                     display: 'block',
                                     left: this.state.imgLeft,
@@ -514,13 +514,13 @@ const Cropper = React.createClass({
                                     height: this.state.imgHeight
                                 }
                             )} ref="frameNode">
-                            <div style={this.state.styles.clone}>
+                            <div style={styles.clone}>
                                 <img
                                     crossOrigin="anonymous"
                                     src={src}
                                     style={deepExtend(
                                         {},
-                                        this.state.styles.img,
+                                        styles.img,
                                         {
                                             marginLeft: -this.state.imgLeft,
                                             marginTop: -this.state.imgTop
@@ -531,61 +531,61 @@ const Cropper = React.createClass({
                                     height={img_height}
                                 />
                             </div>
-                            <span style={this.state.styles.move} data-action='move'></span>
-                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotCenter)}
+                            <span style={styles.move} data-action='move'></span>
+                            <span style={deepExtend({}, styles.dot, styles.dotCenter)}
                                   data-action='move'>
                                <span
-                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerCenterVertical)}></span>
+                                   style={deepExtend({}, styles.dotInner, styles.dotInnerCenterVertical)}></span>
                                <span
-                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerCenterHorizontal)}></span>
+                                   style={deepExtend({}, styles.dotInner, styles.dotInnerCenterHorizontal)}></span>
                            </span>
-                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNE)}
+                            <span style={deepExtend({}, styles.dot, styles.dotNE)}
                                   data-action="ne">
                                <span
-                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerNE)}></span>
+                                   style={deepExtend({}, styles.dotInner, styles.dotInnerNE)}></span>
                            </span>
-                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotN)}
+                            <span style={deepExtend({}, styles.dot, styles.dotN)}
                                   data-action="n">
                                <span
-                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerN)}></span>
+                                   style={deepExtend({}, styles.dotInner, styles.dotInnerN)}></span>
                            </span>
-                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotNW)}
+                            <span style={deepExtend({}, styles.dot, styles.dotNW)}
                                   data-action="nw">
                                <span
-                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerNW)}></span>
+                                   style={deepExtend({}, styles.dotInner, styles.dotInnerNW)}></span>
                            </span>
-                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotE)}
+                            <span style={deepExtend({}, styles.dot, styles.dotE)}
                                   data-action="e">
                                <span
-                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerE)}></span>
+                                   style={deepExtend({}, styles.dotInner, styles.dotInnerE)}></span>
                            </span>
-                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotW)}
+                            <span style={deepExtend({}, styles.dot, styles.dotW)}
                                   data-action="w">
                                <span
-                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerW)}></span>
+                                   style={deepExtend({}, styles.dotInner, styles.dotInnerW)}></span>
                            </span>
-                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSE)}
+                            <span style={deepExtend({}, styles.dot, styles.dotSE)}
                                   data-action="se">
                                <span
-                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerSE)}></span>
+                                   style={deepExtend({}, styles.dotInner, styles.dotInnerSE)}></span>
                            </span>
-                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotS)}
+                            <span style={deepExtend({}, styles.dot, styles.dotS)}
                                   data-action="s">
                                <span
-                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerS)}></span>
+                                   style={deepExtend({}, styles.dotInner, styles.dotInnerS)}></span>
                            </span>
-                            <span style={deepExtend({}, this.state.styles.dot, this.state.styles.dotSW)}
+                            <span style={deepExtend({}, styles.dot, styles.dotSW)}
                                   data-action="sw">
                                <span
-                                   style={deepExtend({}, this.state.styles.dotInner, this.state.styles.dotInnerSW)}></span>
+                                   style={deepExtend({}, styles.dotInner, styles.dotInnerSW)}></span>
                            </span>
-                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineN)}
+                            <span style={deepExtend({}, styles.line, styles.lineN)}
                                   data-action="n"></span>
-                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineS)}
+                            <span style={deepExtend({}, styles.line, styles.lineS)}
                                   data-action="s"></span>
-                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineW)}
+                            <span style={deepExtend({}, styles.line, styles.lineW)}
                                   data-action="w"></span>
-                            <span style={deepExtend({}, this.state.styles.line, this.state.styles.lineE)}
+                            <span style={deepExtend({}, styles.line, styles.lineE)}
                                   data-action="e"></span>
                         </div>
                     </div>
