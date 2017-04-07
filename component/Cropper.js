@@ -36,7 +36,7 @@ const Cropper = React.createClass({
         };
     },
     getInitialState() {
-        let {originX, originY, width, height, selectionNatural, fixedRatio, allowNewSelection, rate, styles, imageLoaded, beforeImageLoaded} = this.props;
+        let {originX, originY, width, height, selectionNatural, fixedRatio, allowNewSelection, rate, styles, imageLoaded} = this.props;
         return {
             img_width: '100%',
             img_height: 'auto',
@@ -57,11 +57,8 @@ const Cropper = React.createClass({
             maxLeft: 0,
             maxTop: 0,
             action: null,
-            imgLoaded: false,
             imgBeforeLoaded: false,
             styles: deepExtend({}, defaultStyles, styles),
-            imageLoaded,
-            beforeImageLoaded,
             moved: false,
             originalOriginX: originX,
             originalOriginY: originY,
@@ -201,32 +198,35 @@ const Cropper = React.createClass({
 
         this.setState({imgLeft: left, imgTop: top, imgWidth: width, imgHeight: height});
     },
-
+    
+    // image onloaded hook
     imgOnLoad(){
-        const {imageLoaded} = this.state;
-        this.setState({imgLoaded: true});
+        const {imageLoaded} = this.props;
         imageLoaded();
     },
-
+    
+    // adjust image height when image size scaleing change, also initialize styles
     imgGetSizeBeforeLoad(){
-        var that = this;
+        let that = this;
+        // trick way to get naturalwidth of image after component did mount
         setTimeout(function () {
             let img = ReactDOM.findDOMNode(that.refs.img);
             if (img && img.naturalWidth) {
-                const {beforeImageLoaded} = that.state;
-
-                var heightRatio = img.offsetWidth / img.naturalWidth;
-                var height = parseInt(img.naturalHeight * heightRatio);
+                const {beforeImageLoaded} = that.props;
+                
+                // image scaleing
+                let _heightRatio = img.offsetWidth / img.naturalWidth;
+                let height = parseInt(img.naturalHeight * _heightRatio);
 
                 that.setState({
                     img_height: height,
                     imgBeforeLoaded: true,
                 }, () => that.initStyles());
-
+                // before image loaded hook
                 beforeImageLoaded();
 
-            }
-            else if (img) {
+            } else if (img) {
+                // catch if image naturalwidth is 0
                 that.imgGetSizeBeforeLoad();
             }
 
