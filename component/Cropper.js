@@ -38,8 +38,8 @@ const Cropper = React.createClass({
         return {
             img_width: '100%',
             img_height: 'auto',
-            imgWidth: 200,
-            imgheight: 200,
+            cropWidth: 200,
+            cropHeight: 200,
             imgTop: 0,
             imgLeft: 0,
             originX,
@@ -181,7 +181,7 @@ const Cropper = React.createClass({
             height = img_height;
         }
 
-        this.setState({imgLeft: left, imgTop: top, imgWidth: width, imgHeight: height});
+        this.setState({imgLeft: left, imgTop: top, cropWidth: width, cropHeight: height});
     },
     
     // image onloaded hook
@@ -464,8 +464,8 @@ const Cropper = React.createClass({
                                     display: 'block',
                                     left: this.state.imgLeft,
                                     top: this.state.imgTop,
-                                    width: this.state.imgWidth,
-                                    height: this.state.imgHeight
+                                    width: this.state.cropWidth,
+                                    height: this.state.cropHeight
                                 }
                             )} ref="frameNode">
                             <div style={styles.clone}>
