@@ -17,7 +17,7 @@ const Cropper = React.createClass({
         imageLoaded: React.PropTypes.function,
         beforeImageLoaded: React.PropTypes.function
     },
-    getDefaultProps() {
+    getDefaultProps () {
         return {
             width: 200,
             height: 200,
@@ -31,15 +31,15 @@ const Cropper = React.createClass({
             beforeImageLoaded: function () { }
         };
     },
-    getInitialState() {
+    getInitialState () {
         let {originX, originY, width, height, fixedRatio, rate, styles, imageLoaded} = this.props;
         return {
             img_width: '100%',
             img_height: 'auto',
             cropWidth: 200,
             cropHeight: 200,
-            imgTop: 0,
-            imgLeft: 0,
+            cropTop: 0,
+            cropLeft: 0,
             originX,
             originY,
             startX: 0,
@@ -52,11 +52,10 @@ const Cropper = React.createClass({
             action: null,
             imgBeforeLoaded: false,
             styles: deepExtend({}, defaultStyles, styles),
-            moved: false,
         };
     },
     // initialize style, component did mount or component updated.
-    initStyles(){
+    initStyles (){
         const container = ReactDOM.findDOMNode(this.refs.container)
         this.setState({
             img_width: container.offsetWidth
@@ -87,12 +86,12 @@ const Cropper = React.createClass({
     },
 
     // props change, update frame
-    updateFrame(frameWidth, frameHeight, originX, originY) {
+    updateFrame (frameWidth, frameHeight, originX, originY) {
         this.setState({ frameWidth, frameHeight, originX, originY }, () => this.initStyles() );
     },
 
-    // frame width, frame height, position left, position top, if moved
-    calcPosition(width, height, left, top, move){
+    // frame width, frame height, position left, position top
+    calcPosition (width, height, left, top, move){
         const {img_width, img_height} = this.state;
         const {rate, fixedRatio} = this.props;
         // width < 0 or height < 0, frame invalid
@@ -158,16 +157,16 @@ const Cropper = React.createClass({
             height = img_height;
         }
 
-        this.setState({imgLeft: left, imgTop: top, cropWidth: width, cropHeight: height});
+        this.setState({cropLeft: left, cropTop: top, cropWidth: width, cropHeight: height});
     },
     
     // image onloaded hook
-    imgOnLoad(){
+    imgOnLoad() {
         this.props.imageLoaded();
     },
     
     // adjust image height when image size scaleing change, also initialize styles
-    imgGetSizeBeforeLoad(){
+    imgGetSizeBeforeLoad() {
         let that = this;
         // trick way to get naturalwidth of image after component did mount
         setTimeout(function () {
@@ -194,7 +193,7 @@ const Cropper = React.createClass({
         }, 0)
     },
     // create a new frame
-    createNewFrame(e){
+    createNewFrame(e) {
         if (this.state.dragging) {
             // click or touch event
             const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
@@ -202,25 +201,30 @@ const Cropper = React.createClass({
             const {rate, fixedRatio} = this.props;
             const {frameWidth, frameHeight, startX, startY, offsetLeft, offsetTop} = this.state;
             
-            // offset x and y
+            // click or touch point's offset from source image top
             const _x = pageX - startX;
             const _y = pageY - startY;
 
-            if (_x > 0) {
-                if (_y < 0) {
-                    return this.calcPosition(frameWidth + _x, fixedRatio ? ((frameWidth + _x) / rate) : (frameHeight - _y), offsetLeft, fixedRatio ? (offsetTop - _x / rate) : (offsetTop + _y));
-                }
-                return this.calcPosition(frameWidth + _x, fixedRatio ? ((frameWidth + _x) / rate) : (frameHeight + _y), offsetLeft, offsetTop);
-            }
-            if (_y > 0) {
-                return this.calcPosition(frameWidth - _x, fixedRatio ? ((frameWidth - _x) / rate) : (frameHeight + _y), offsetLeft + _x, offsetTop);
+            let _width = frameWidth + Math.abs(_x),
+                _height = fixedRatio ? (frameWidth + Math.abs(_x)) / rate : frameHeight + Math.abs(_y),
+                _left = offsetLeft,
+                _top = offsetTop
+            
+            if (_y < 0) {
+                // drag and resize to top, top changing
+                _top = fixedRatio ? offsetTop - Math.abs(_x) / rate : offsetTop - Math.abs(_y)
             }
 
-            return this.calcPosition(frameWidth - _x, fixedRatio ? ((frameWidth - _x) / rate) : (frameHeight - _y), offsetLeft + _x, fixedRatio ? (offsetTop + _x / rate) : (offsetTop + _y));
+            if (_x < 0) {
+                // drag and resize, go to left, left changing
+                _left = offsetLeft + _x
+            }
+            // calc position
+            return this.calcPosition(_width, _height, _left, _top)
         }
     },
 
-    handleDrag(e){
+    handleDrag(e) {
         if (this.state.dragging) {
             e.preventDefault();
             let {action} = this.state;
@@ -231,7 +235,7 @@ const Cropper = React.createClass({
     },
 
     // frame move handler
-    frameMove(e){
+    frameMove(e) {
         const {originX, originY, startX, startY, frameWidth, frameHeight, maxLeft, maxTop} = this.state;
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY;
@@ -239,21 +243,20 @@ const Cropper = React.createClass({
         let _y = pageY - startY + originY;
         if (pageX < 0 || pageY < 0) return false;
 
-        if ((pageX - startX) > 0 || (pageY - startY)) {
-            this.setState({moved: true});
-        }
-
         if (_x > maxLeft) _x = maxLeft;
         if (_y > maxTop) _y = maxTop;
-        this.calcPosition(frameWidth, frameHeight, _x, _y, true);
+        // frame width, frame height not change, top and left changing
+        this.calcPosition(frameWidth, frameHeight, _x, _y);
     },
     
     // starting draging
-    handleDragStart(e){
+    handleDragStart(e) {
         const {allowNewSelection} = this.props;
         const action = e.target.getAttribute('data-action') ? e.target.getAttribute('data-action') : e.target.parentNode.getAttribute('data-action');
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY;
+
+        // if drag or move or allow new selection, change startX, startY, draging state
         if (action || allowNewSelection) {
             e.preventDefault();
             this.setState({
@@ -263,23 +266,23 @@ const Cropper = React.createClass({
                 action
             });
         }
+        // create frame
         if (!action && allowNewSelection) {
             let container = ReactDOM.findDOMNode(this.refs.container);
             const {offsetLeft, offsetTop} = container;
+
             this.setState({
+                // set offset left and top of new frame 
                 offsetLeft: pageX - offsetLeft,
                 offsetTop: pageY - offsetTop,
                 frameWidth: 2,
                 frameHeight: 2,
-                moved: true
-            }, () => {
-                this.calcPosition(2, 2, pageX - offsetLeft, pageY - offsetTop);
-            });
+            }, () => this.calcPosition(2, 2, pageX - offsetLeft, pageY - offsetTop) );
         }
     },
     
     // stop draging
-    handleDragStop(e){
+    handleDragStop(e) {
         if (this.state.dragging) {
             e.preventDefault();
             const frameNode = ReactDOM.findDOMNode(this.refs.frameNode)
@@ -298,7 +301,7 @@ const Cropper = React.createClass({
         }
     },
 
-    componentDidMount(){
+    componentDidMount() {
         document.addEventListener('mousemove', this.handleDrag);
         document.addEventListener('touchmove', this.handleDrag);
 
@@ -308,7 +311,7 @@ const Cropper = React.createClass({
         this.imgGetSizeBeforeLoad();
     },
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         document.removeEventListener('mousemove', this.handleDrag);
         document.removeEventListener('touchmove', this.handleDrag);
 
@@ -336,10 +339,6 @@ const Cropper = React.createClass({
         if (pageY !== 0 && pageX !== 0) {
             const _x = pageX - startX;
             const _y = pageY - startY;
-
-            if ((pageX - startX) > 0 || (pageY - startY)) {
-                this.setState({moved: true});
-            }
 
             let new_width = frameWidth + _x;
             let new_height = fixedRatio ? new_width : (frameHeight + _y);
@@ -391,7 +390,7 @@ const Cropper = React.createClass({
     },
 
     values(){
-        const {frameWidth, frameHeight, originX, originY, img_width, img_height, moved } = this.state;
+        const {frameWidth, frameHeight, originX, originY, img_width, img_height } = this.state;
         return { width: frameWidth, height: frameHeight, x: originX, y: originY, imgWidth: img_width, imgHeight: img_height };
     },
 
@@ -409,24 +408,25 @@ const Cropper = React.createClass({
             />
         </div>;
 
-        let node = null;
-
         if (disabled) {
-            node = <div ref='container' style={deepExtend({}, styles.container, {
-                'position': 'relative',
-                'height': img_height
-            })}>
-                {imageNode}
-                <div style={deepExtend({}, styles.modal, styles.modal_disabled)}></div>
-            </div>;
+            return (
+                <div ref='container' style={deepExtend({}, styles.container, {
+                    'position': 'relative',
+                    'height': img_height
+                })}>
+                    {imageNode}
+                    <div style={deepExtend({}, styles.modal, styles.modal_disabled)}></div>
+                </div>
+            )
         }
-        else {
-            node = <div ref="container"
-                        onMouseDown={this.handleDragStart} onTouchStart={this.handleDragStart}
-                        style={deepExtend({}, styles.container, {
-                            'position': 'relative',
-                            'height': img_height
-                        })}>
+
+        return (
+            <div ref="container"
+                onMouseDown={this.handleDragStart} onTouchStart={this.handleDragStart}
+                style={deepExtend({}, styles.container, {
+                    'position': 'relative',
+                    'height': img_height
+                })}>
                 {imageNode}
                 {imgBeforeLoaded ?
                     <div>
@@ -438,8 +438,8 @@ const Cropper = React.createClass({
                                 dragging ? styles.dragging_frame : {},
                                 {
                                     display: 'block',
-                                    left: this.state.imgLeft,
-                                    top: this.state.imgTop,
+                                    left: this.state.cropLeft,
+                                    top: this.state.cropTop,
                                     width: this.state.cropWidth,
                                     height: this.state.cropHeight
                                 }
@@ -452,8 +452,8 @@ const Cropper = React.createClass({
                                         {},
                                         styles.img,
                                         {
-                                            marginLeft: -this.state.imgLeft,
-                                            marginTop: -this.state.imgTop
+                                            marginLeft: -this.state.cropLeft,
+                                            marginTop: -this.state.cropTop
                                         }
                                     )}
                                     ref="cloneImg"
@@ -522,12 +522,7 @@ const Cropper = React.createClass({
                     :
                     null
                 }
-            </div>;
-        }
-
-
-        return (
-            node
+            </div>
         );
     }
 });
