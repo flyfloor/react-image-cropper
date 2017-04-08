@@ -29,10 +29,8 @@ const Cropper = React.createClass({
             originX: 0,
             originY: 0,
             styles: {},
-            imageLoaded: function () {
-            },
-            beforeImageLoaded: function () {
-            }
+            imageLoaded: function () { },
+            beforeImageLoaded: function () { }
         };
     },
     getInitialState() {
@@ -59,13 +57,11 @@ const Cropper = React.createClass({
             imgBeforeLoaded: false,
             styles: deepExtend({}, defaultStyles, styles),
             moved: false,
-            originalOriginX: originX,
-            originalOriginY: originY,
             originalFrameWidth: width,
             originalFrameHeight: fixedRatio ? width / rate : height,
         };
     },
-
+    // initialize style, component did mount or component updated.
     initStyles(){
         const container = ReactDOM.findDOMNode(this.refs.container)
         this.setState({
@@ -122,75 +118,74 @@ const Cropper = React.createClass({
             frameHeight: newHeight,
             originX: newOriginX,
             originY: newOriginY,
-            originalFrameWidth: newWidth,
-            originalFrameHeight: newHeight,
-            originalOriginX: newOriginX,
-            originalOriginY: newOriginY
         }, () => {
             this.initStyles();
         });
     },
 
+    // frame width, frame height, position left, position top, if moved
     calcPosition(width, height, left, top, move){
         const {img_width, img_height, fixedRatio} = this.state;
         const {rate} = this.props;
-
+        // width < 0 or height < 0, frame invalid
         if (width < 0 || height < 0) return false;
+
+        // if ratio is fixed
         if (fixedRatio) {
+            // adjust by width
             if (width / img_width > height / img_height) {
                 if (width > img_width) {
                     width = img_width;
                     left = 0;
-                    if (fixedRatio) {
-                        height = width / rate;
-                    }
+                    height = width / rate;
                 }
             } else {
+            // adjust by height
                 if (height > img_height) {
                     height = img_height;
                     top = 0;
-                    if (fixedRatio) {
-                        width = height * rate;
-                    }
+                    width = height * rate;
                 }
             }
         }
 
-
+        // frame width plus offset left, larger than img's width
         if (width + left > img_width) {
             if (fixedRatio) {
+                // if fixed ratio, adjust left with width
                 left = img_width - width;
-            }
-            else {
+            } else {
+                // resize width with left
                 width = width - ((width + left) - img_width);
             }
         }
-
+        
+        // frame heigth plust offset top, larger than img's height
         if (height + top > img_height) {
             if (fixedRatio) {
+                // if fixed ratio, adjust top with height
                 top = img_height - height;
-            }
-            else {
+            } else {
+                // resize height with top
                 height = height - ((height + top) - img_height);
             }
         }
-
+        
+        // left is invalid
         if (left < 0) {
-            if (!fixedRatio && !move) {
-                width = width + left;
-            }
             left = 0;
         }
+
+        // top is invalid
         if (top < 0) {
-            if (!fixedRatio && !move) {
-                height = height + top;
-            }
             top = 0;
         }
 
+        // if frame width larger than img width
         if (width > img_width) {
             width = img_width;
         }
+        // if frame height larger than img height
         if (height > img_height) {
             height = img_height;
         }
@@ -231,14 +226,16 @@ const Cropper = React.createClass({
 
         }, 0)
     },
-
+    // create a new frame
     createNewFrame(e){
         if (this.state.dragging) {
+            // click or touch event
             const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
             const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY;
             const {rate} = this.props;
             const {frameWidth, frameHeight, startX, startY, offsetLeft, offsetTop, fixedRatio} = this.state;
-
+            
+            // offset x and y
             const _x = pageX - startX;
             const _y = pageY - startY;
 
@@ -266,6 +263,7 @@ const Cropper = React.createClass({
         }
     },
 
+    // frame move handler
     frameMove(e){
         const {originX, originY, startX, startY, frameWidth, frameHeight, maxLeft, maxTop} = this.state;
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
@@ -282,7 +280,8 @@ const Cropper = React.createClass({
         if (_y > maxTop) _y = maxTop;
         this.calcPosition(frameWidth, frameHeight, _x, _y, true);
     },
-
+    
+    // starting draging
     handleDragStart(e){
         const {allowNewSelection} = this.props;
         const action = e.target.getAttribute('data-action') ? e.target.getAttribute('data-action') : e.target.parentNode.getAttribute('data-action');
@@ -311,7 +310,8 @@ const Cropper = React.createClass({
             });
         }
     },
-
+    
+    // stop draging
     handleDragStop(e){
         if (this.state.dragging) {
             e.preventDefault();
@@ -349,14 +349,13 @@ const Cropper = React.createClass({
         document.removeEventListener('touchend', this.handleDragStop);
     },
 
-    componentWillReceiveProps(newProps)
-    {
-        var width = this.props.width !== newProps.width;
-        var height = this.props.height !== newProps.height;
-        var originX = this.props.originX !== newProps.originX;
-        var originY = this.props.originY !== newProps.originY;
+    componentWillReceiveProps(newProps) {
+        const {width, height, originX, originY} = this.props
 
-        if (width || height || originX || originY) {
+        if (width !== newProps.width 
+            || height !== newProps.height 
+            || originX !== newProps.originX 
+            || originY !== newProps.originY) {
             this.updateFrame(newProps.width, newProps.height, newProps.originX, newProps.originY);
         }
     },
@@ -436,27 +435,22 @@ const Cropper = React.createClass({
     },
 
     values(){
-        const {frameWidth, frameHeight, originX, originY, img_width, img_height, selectionNatural, moved, originalOriginX, originalOriginY, originalFrameWidth, originalFrameHeight} = this.state;
+        const {frameWidth, frameHeight, originX, originY, img_width, img_height, selectionNatural, moved } = this.state;
 
         let img = ReactDOM.findDOMNode(this.refs.img);
         let _return = null;
 
-        var thisOriginX = moved ? originX : originalOriginX;
-        var thisOriginY = moved ? originY : originalOriginY;
-        var thisFrameWidth = moved ? frameWidth : originalFrameWidth;
-        var thisFrameHeight = moved ? frameHeight : originalFrameHeight;
-
         if (selectionNatural && moved) {
             const _rateWidth = img.naturalWidth / img_width;
             const _rateHeight = img.naturalHeight / img_height;
-            const realWidth = parseInt(thisFrameWidth * _rateWidth);
-            const realHeight = parseInt(thisFrameHeight * _rateHeight);
-            const realX = parseInt(thisOriginX * _rateHeight);
-            const realY = parseInt(thisOriginY * _rateWidth);
+            const realWidth = parseInt(frameWidth * _rateWidth);
+            const realHeight = parseInt(frameHeight * _rateHeight);
+            const realX = parseInt(originX * _rateHeight);
+            const realY = parseInt(originY * _rateWidth);
             _return = {width: realWidth, height: realHeight, x: realX, y: realY};
         }
         else {
-            _return = {width: thisFrameWidth, height: thisFrameHeight, x: thisOriginX, y: thisOriginY};
+            _return = {width: frameWidth, height: frameHeight, x: originX, y: originY};
         }
 
         return _return;
