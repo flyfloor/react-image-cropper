@@ -57,8 +57,6 @@ const Cropper = React.createClass({
             imgBeforeLoaded: false,
             styles: deepExtend({}, defaultStyles, styles),
             moved: false,
-            originalFrameWidth: width,
-            originalFrameHeight: fixedRatio ? width / rate : height,
         };
     },
     // initialize style, component did mount or component updated.
@@ -111,16 +109,9 @@ const Cropper = React.createClass({
         });
     },
 
-    updateFrame(newWidth, newHeight, newOriginX, newOriginY)
-    {
-        this.setState({
-            frameWidth: newWidth,
-            frameHeight: newHeight,
-            originX: newOriginX,
-            originY: newOriginY,
-        }, () => {
-            this.initStyles();
-        });
+    // props change, update frame
+    updateFrame(frameWidth, frameHeight, originX, originY) {
+        this.setState({ frameWidth, frameHeight, originX, originY }, () => this.initStyles() );
     },
 
     // frame width, frame height, position left, position top, if moved
@@ -406,55 +397,26 @@ const Cropper = React.createClass({
         }
     },
 
-    crop({
-      maxWidth: _maxWidth,
-      maxHeight: _maxHeight
-    } = {}){
+    crop(){
         const {frameWidth, frameHeight, originX, originY, img_width} = this.state;
         let canvas = document.createElement('canvas');
         let img = ReactDOM.findDOMNode(this.refs.img);
         const _rate = img.naturalWidth / img_width;
-        const realWidth = frameWidth * _rate;
-        const realHeight = frameHeight * _rate;
+        const realFrameWidth = frameWidth * _rate;
+        const realFrameHeight = frameHeight * _rate;
+        const realOriginX = originX * _rate
+        const realOriginY = originY * _rate
 
-        const maxWidth = _maxWidth || realWidth;
-        const maxHeight = _maxHeight || realHeight;
+        canvas.width = frameWidth;
+        canvas.height = frameHeight;
 
-        const squeezeRatio = maxWidth / realWidth;
-        const flattenRatio = maxHeight / realHeight;
-        const scaleRatio = Math.min(squeezeRatio, flattenRatio);
-
-        const finalWidth = scaleRatio * realWidth;
-        const finalHeight = scaleRatio * realHeight;
-
-        canvas.width = finalWidth;
-        canvas.height = finalHeight;
-
-        canvas.getContext("2d").drawImage(img, originX * _rate, originY * _rate, realWidth, realHeight, 0, 0, finalWidth, finalHeight);
+        canvas.getContext("2d").drawImage(img, realOriginX, realOriginY, realFrameWidth, realFrameHeight, 0, 0, frameWidth, frameHeight);
         return canvas.toDataURL();
     },
 
     values(){
         const {frameWidth, frameHeight, originX, originY, img_width, img_height, selectionNatural, moved } = this.state;
-
-        let img = ReactDOM.findDOMNode(this.refs.img);
-        let _return = null;
-
-        if (selectionNatural && moved) {
-            const _rateWidth = img.naturalWidth / img_width;
-            const _rateHeight = img.naturalHeight / img_height;
-            const realWidth = parseInt(frameWidth * _rateWidth);
-            const realHeight = parseInt(frameHeight * _rateHeight);
-            const realX = parseInt(originX * _rateHeight);
-            const realY = parseInt(originY * _rateWidth);
-            _return = {width: realWidth, height: realHeight, x: realX, y: realY};
-        }
-        else {
-            _return = {width: frameWidth, height: frameHeight, x: originX, y: originY};
-        }
-
-        return _return;
-
+        return { width: frameWidth, height: frameHeight, x: originX, y: originY, imgWidth: img_width, imgHeight: img_height };
     },
 
     render() {
@@ -462,8 +424,7 @@ const Cropper = React.createClass({
         const {src, disabled} = this.props;
 
         const imageNode = <div style={styles.source} ref="sourceNode">
-            <img
-                crossOrigin="anonymous"
+            <img crossOrigin="anonymous"
                 src={src}
                 style={deepExtend({}, styles.img, styles.source_img)}
                 ref='img'
