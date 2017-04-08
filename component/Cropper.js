@@ -10,7 +10,6 @@ const Cropper = React.createClass({
         rate: React.PropTypes.number,
         width: React.PropTypes.number,
         height: React.PropTypes.number,
-        selectionNatural: React.PropTypes.bool,
         fixedRatio: React.PropTypes.bool,
         allowNewSelection: React.PropTypes.bool,
         disabled: React.PropTypes.bool,
@@ -22,7 +21,6 @@ const Cropper = React.createClass({
         return {
             width: 200,
             height: 200,
-            selectionNatural: false,
             fixedRatio: true,
             allowNewSelection: true,
             rate: 1,
@@ -34,7 +32,7 @@ const Cropper = React.createClass({
         };
     },
     getInitialState() {
-        let {originX, originY, width, height, selectionNatural, fixedRatio, rate, styles, imageLoaded} = this.props;
+        let {originX, originY, width, height, fixedRatio, rate, styles, imageLoaded} = this.props;
         return {
             img_width: '100%',
             img_height: 'auto',
@@ -47,8 +45,6 @@ const Cropper = React.createClass({
             startX: 0,
             startY: 0,
             frameWidth: width,
-            fixedRatio,
-            selectionNatural,
             frameHeight: fixedRatio ? (width / rate) : height,
             dragging: false,
             maxLeft: 0,
@@ -68,27 +64,8 @@ const Cropper = React.createClass({
             // calc frame width height
             let {originX, originY, disabled} = this.props;
             if (disabled) return;
-            const {img_width, img_height, selectionNatural} = this.state;
+            const {img_width, img_height} = this.state;
             let {frameWidth, frameHeight} = this.state;
-
-
-            if (selectionNatural) {
-                let img = ReactDOM.findDOMNode(this.refs.img);
-                const _rateWidth = img_width / img.naturalWidth;
-                const _rateHeight = img_height / img.naturalHeight;
-                const realWidth = parseInt(frameWidth * _rateWidth);
-                const realHeight = parseInt(frameHeight * _rateHeight);
-                const realX = parseInt(originX * _rateHeight);
-                const realY = parseInt(originY * _rateWidth);
-
-                frameWidth = realWidth;
-                frameHeight = realHeight;
-                originX = realX;
-                originY = realY;
-
-                this.setState({frameWidth: frameWidth, frameHeight: frameHeight, originX: originX, originY: originY});
-            }
-
 
             const maxLeft = img_width - frameWidth;
             const maxTop = img_height - frameHeight;
@@ -116,8 +93,8 @@ const Cropper = React.createClass({
 
     // frame width, frame height, position left, position top, if moved
     calcPosition(width, height, left, top, move){
-        const {img_width, img_height, fixedRatio} = this.state;
-        const {rate} = this.props;
+        const {img_width, img_height} = this.state;
+        const {rate, fixedRatio} = this.props;
         // width < 0 or height < 0, frame invalid
         if (width < 0 || height < 0) return false;
 
@@ -186,8 +163,7 @@ const Cropper = React.createClass({
     
     // image onloaded hook
     imgOnLoad(){
-        const {imageLoaded} = this.props;
-        imageLoaded();
+        this.props.imageLoaded();
     },
     
     // adjust image height when image size scaleing change, also initialize styles
@@ -223,8 +199,8 @@ const Cropper = React.createClass({
             // click or touch event
             const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
             const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY;
-            const {rate} = this.props;
-            const {frameWidth, frameHeight, startX, startY, offsetLeft, offsetTop, fixedRatio} = this.state;
+            const {rate, fixedRatio} = this.props;
+            const {frameWidth, frameHeight, startX, startY, offsetLeft, offsetTop} = this.state;
             
             // offset x and y
             const _x = pageX - startX;
@@ -354,8 +330,8 @@ const Cropper = React.createClass({
     frameDotMove(dir, e){
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX;
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY;
-        const {rate} = this.props;
-        const {startX, startY, originX, originY, frameWidth, frameHeight, fixedRatio} = this.state;
+        const {rate, fixedRatio} = this.props;
+        const {startX, startY, originX, originY, frameWidth, frameHeight} = this.state;
 
         if (pageY !== 0 && pageX !== 0) {
             const _x = pageX - startX;
@@ -415,7 +391,7 @@ const Cropper = React.createClass({
     },
 
     values(){
-        const {frameWidth, frameHeight, originX, originY, img_width, img_height, selectionNatural, moved } = this.state;
+        const {frameWidth, frameHeight, originX, originY, img_width, img_height, moved } = this.state;
         return { width: frameWidth, height: frameHeight, x: originX, y: originY, imgWidth: img_width, imgHeight: img_height };
     },
 

@@ -85,12 +85,11 @@ const ImageCropDemo = React.createClass({
                     <h3>Variable width and height, cropper frame is relative to natural image size, don't allow new
                         selection, set custom styles</h3>
                     <Cropper src={src}
-                             width={300}
-                             height={1113}
-                             originX={650}
-                             originY={386}
+                             width={200}
+                             height={500}
+                             originX={200}
+                             originY={50}
                              fixedRatio={false}
-                             selectionNatural={true}
                              allowNewSelection={false}
                              styles={{
                                  source_img: {
