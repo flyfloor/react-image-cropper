@@ -30,15 +30,13 @@ Custom:
 
 `image.src = this.refs.cropper.crop()`
 
-OPTIONS:
-- maxHeight : make sure the cropped image is not bigger than this max height
-- maxWidth : make sure the cropped image is not bigger than this max width
-
-`image.src = this.refs.cropper.crop({ maxWidth: 1024 })`
-
 + get crop values
 
 `var values = this.refs.cropper.values()`
+
++ onChange for preview
+
+(values) => onChange(values)
 
 + custom use
 
@@ -54,6 +52,7 @@ OPTIONS:
 | styles | specify styles to override inline styles |
 | onImgLoad | specify fuction callback to run when the image completed loading |
 | beforeImgload | specify function callback to run when the image size value is ready but image is not completed loading |
+| onChange | triggred when dragging stop, get values of cropper |
 
 
 **[See the demo](http://braavos.me/react-image-cropper/)**

@@ -42,8 +42,11 @@ class ImageCropDemo extends Component {
         });
     }
 
-    handleChange(values){
-        console.log(values)
+    handleChange(state, values){
+        console.log(state, values)
+        this.setState({
+            [state + 'Values']: values
+        });
     }
 
     handleGetValues(state){
@@ -97,7 +100,7 @@ class ImageCropDemo extends Component {
                              originY={50}
                              fixedRatio={false}
                              allowNewSelection={false}
-                             onChange={this.handleChange.bind(this)}
+                             onChange={values => this.handleChange('image4', values)}
                              styles={{
                                  source_img: {
                                      WebkitFilter: 'blur(3.5px)',
