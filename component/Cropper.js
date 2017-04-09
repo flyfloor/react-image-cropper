@@ -7,7 +7,7 @@ const PropTypes = require('prop-types')
 class Cropper extends Component {
     constructor(props) {
         super(props);
-        let {originX, originY, width, height, fixedRatio, rate, styles} = props
+        let {originX, originY, width, height, fixedRatio, ratio, styles} = props
         this.state = {
             // background image width
             imgWidth: '100%',
@@ -16,7 +16,7 @@ class Cropper extends Component {
             // cropper width, drag trigger changing
             frameWidth4Style: width,
             // cropper height, drag trigger changing
-            frameHeight4Style: fixedRatio ? (width / rate) : height,
+            frameHeight4Style: fixedRatio ? (width / ratio) : height,
             // cropper height, drag trigger changing
             toImgTop4Style: 0,
             toImgLeft4Style: 0,
@@ -30,7 +30,7 @@ class Cropper extends Component {
             // frame width, change only dragging stop 
             frameWidth: width,
             // frame height, change only dragging stop 
-            frameHeight: fixedRatio ? (width / rate) : height,
+            frameHeight: fixedRatio ? (width / ratio) : height,
             dragging: false,
             maxLeft: 0,
             maxTop: 0,
@@ -66,7 +66,15 @@ class Cropper extends Component {
 
             this.setState({maxLeft, maxTop})
             // calc clone position
-            this.calcPosition(frameWidth, frameHeight, originX, originY)
+            this.calcPosition(frameWidth, frameHeight, originX, originY, () => {
+                const {frameWidth4Style, frameHeight4Style, toImgTop4Style, toImgLeft4Style} = this.state
+                this.setState({
+                    frameWidth: frameWidth4Style,
+                    frameHeight: frameHeight4Style,
+                    originX: toImgLeft4Style,
+                    originY: toImgTop4Style,
+                });
+            })
 
         })
     }
@@ -141,9 +149,9 @@ class Cropper extends Component {
     }
 
     // frame width, frame height, position left, position top
-    calcPosition (width, height, left, top){
+    calcPosition (width, height, left, top, callback){
         const {imgWidth, imgHeight} = this.state
-        const {rate, fixedRatio} = this.props
+        const {ratio, fixedRatio} = this.props
         // width < 0 or height < 0, frame invalid
         if (width < 0 || height < 0) return false
         // if ratio is fixed
@@ -153,14 +161,14 @@ class Cropper extends Component {
                 if (width > imgWidth) {
                     width = imgWidth
                     left = 0
-                    height = width / rate
+                    height = width / ratio
                 }
             } else {
             // adjust by height
                 if (height > imgHeight) {
                     height = imgHeight
                     top = 0
-                    width = height * rate
+                    width = height * ratio
                 }
             }
         }
@@ -200,7 +208,14 @@ class Cropper extends Component {
         if (height > imgHeight) {
             height = imgHeight
         }
-        this.setState({ toImgLeft4Style: left, toImgTop4Style: top, frameWidth4Style: width, frameHeight4Style: height})
+        this.setState({ 
+            toImgLeft4Style: left, 
+            toImgTop4Style: top, 
+            frameWidth4Style: width, 
+            frameHeight4Style: height
+        }, () => {
+            if (callback) callback(this)
+        })
     }
 
     // create a new frame, and drag, so frame width and height is became larger.
@@ -209,7 +224,7 @@ class Cropper extends Component {
             // click or touch event
             const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
             const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
-            const {rate, fixedRatio} = this.props
+            const {ratio, fixedRatio} = this.props
             const {frameWidth, frameHeight, startPageX, startPageY, originX, originY} = this.state
             
             // click or touch point's offset from source image top
@@ -218,13 +233,13 @@ class Cropper extends Component {
             
             // frame new width, height, left, top
             let _width = frameWidth + Math.abs(_x)
-            let _height = fixedRatio ? (frameWidth + Math.abs(_x)) / rate : frameHeight + Math.abs(_y)
+            let _height = fixedRatio ? (frameWidth + Math.abs(_x)) / ratio : frameHeight + Math.abs(_y)
             let _left = originX
             let _top = originY
             
             if (_y < 0) {
                 // drag and resize to top, top changing
-                _top = fixedRatio ? originY - Math.abs(_x) / rate : originY - Math.abs(_y)
+                _top = fixedRatio ? originY - Math.abs(_x) / ratio : originY - Math.abs(_y)
             }
 
             if (_x < 0) {
@@ -255,7 +270,7 @@ class Cropper extends Component {
     frameDotMove(dir, e){
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
-        const {rate, fixedRatio} = this.props
+        const {ratio, fixedRatio} = this.props
         const {startPageX, startPageY, originX, originY, 
                 frameWidth4Style, frameHeight4Style,
                 frameWidth, frameHeight, imgWidth, imgHeight} = this.state
@@ -273,50 +288,50 @@ class Cropper extends Component {
             switch (dir) {
                 case 'ne':
                     _width = frameWidth + _x
-                    _height = fixedRatio ? _width / rate : frameHeight + _y
+                    _height = fixedRatio ? _width / ratio : frameHeight + _y
                     _left = originX
-                    _top = fixedRatio ? (originY - _x / rate) : originY + _y
+                    _top = fixedRatio ? (originY - _x / ratio) : originY + _y
                     break
                 case 'e':
                     _width = frameWidth + _x
-                    _height = fixedRatio ? _width / rate : frameHeight
+                    _height = fixedRatio ? _width / ratio : frameHeight
                     _left = originX
-                    _top = fixedRatio ? originY - _x / rate * 0.5 : originY
+                    _top = fixedRatio ? originY - _x / ratio * 0.5 : originY
                     break
                 case 'se':
                     _width = frameWidth + _x
-                    _height = fixedRatio ? _width / rate : frameHeight + _y
+                    _height = fixedRatio ? _width / ratio : frameHeight + _y
                     _left = originX
                     _top = originY
                     break
                 case 'n':
                     _height = frameHeight - _y
-                    _width = fixedRatio ?  _height * rate : frameWidth
-                    _left = fixedRatio ? originX + _y * rate * 0.5 : originX
+                    _width = fixedRatio ?  _height * ratio : frameWidth
+                    _left = fixedRatio ? originX + _y * ratio * 0.5 : originX
                     _top = originY + _y
                     break
                 case 'nw':
                     _width = frameWidth - _x
-                    _height = fixedRatio ? _width / rate : frameHeight - _y
+                    _height = fixedRatio ? _width / ratio : frameHeight - _y
                     _left = originX + _x
-                    _top = fixedRatio ? originY + _x / rate : originY + _y
+                    _top = fixedRatio ? originY + _x / ratio : originY + _y
                     break
                 case 'w':
                     _width = frameWidth - _x
-                    _height = fixedRatio ? _width / rate : frameHeight
+                    _height = fixedRatio ? _width / ratio : frameHeight
                     _left = originX + _x
-                    _top = fixedRatio ? originY + _x / rate * 0.5 : originY
+                    _top = fixedRatio ? originY + _x / ratio * 0.5 : originY
                     break
                 case 'sw':
                     _width = frameWidth - _x
-                    _height = fixedRatio ? _width / rate : frameHeight + _y
+                    _height = fixedRatio ? _width / ratio : frameHeight + _y
                     _left = originX + _x
                     _top = originY
                     break
                 case 's':
                     _height = frameHeight + _y
-                    _width = fixedRatio ? _height * rate : frameWidth
-                    _left = fixedRatio ? originX - _y * rate * 0.5 : originX
+                    _width = fixedRatio ? _height * ratio : frameWidth
+                    _left = fixedRatio ? originX - _y * ratio * 0.5 : originX
                     _top = originY
                     break
                 default:
@@ -547,7 +562,7 @@ Cropper.PropTypes = {
     src: PropTypes.string.isRequired,
     originX: PropTypes.number,
     originY: PropTypes.number,
-    rate: PropTypes.number,
+    ratio: PropTypes.number,
     width: PropTypes.number,
     height: PropTypes.number,
     fixedRatio: PropTypes.bool,
@@ -564,7 +579,7 @@ Cropper.defaultProps = {
     height: 200,
     fixedRatio: true,
     allowNewSelection: true,
-    rate: 1,
+    ratio: 1,
     originX: 0,
     originY: 0,
     styles: {},

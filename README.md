@@ -11,7 +11,7 @@ Touch supported
 Custom:
 
 + initial cropper frame position 
-+ frame width, height, rate
++ frame width, height, ratio
 + crop event
 
 ### Hot to Use
@@ -44,7 +44,7 @@ OPTIONS:
 
 | prop  |  value   |
 |:-------:|:--------|
-| rate | width / height |
+| ratio | width / height |
 | width | cropper frame width |
 | height | cropper frame height |
 | originX | cropper original position(x axis), accroding to image left|

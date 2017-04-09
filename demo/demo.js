@@ -75,8 +75,8 @@ class ImageCropDemo extends Component {
                     {this.state.image1 ? <img src={this.state.image1} alt=""/> : null}
                 </li>
                 <li>
-                    <h3>With given rate</h3>
-                    <Cropper src={src} rate={16 / 9} width={500} ref="image2"
+                    <h3>With given ratio</h3>
+                    <Cropper src={src} ratio={16 / 9} width={300} ref="image2"
                              onImgLoad={() => this.handleImageLoaded('image2')}/>
                     <br/>
                     {this.state.image2Loaded ? <button onClick={() => this.handleClick('image2')}>crop</button> : null}
