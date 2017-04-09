@@ -34,17 +34,27 @@ const Cropper = React.createClass({
     getInitialState () {
         let {originX, originY, width, height, fixedRatio, rate, styles, imageLoaded} = this.props
         return {
+            // background image width
             img_width: '100%',
+            // background image height
             img_height: 'auto',
-            cropWidth: 200,
-            cropHeight: 200,
-            cropTop: 0,
-            cropLeft: 0,
+            // cropper width, drag trigger changing
+            frameWidth4Style: width,
+            // cropper height, drag trigger changing
+            frameHeight4Style: fixedRatio ? (width / rate) : height,
+            // cropper height, drag trigger changing
+            toImgTop4Style: 0,
+            toImgLeft4Style: 0,
+            // cropper original position(x axis), accroding to image left
             originX,
+            // cropper original position(y axis), accroding to image top
             originY,
-            startX: 0,
-            startY: 0,
+            // dragging start, position's pageX and pageY
+            startPageX: 0,
+            startPageY: 0,
+            // frame width, change only dragging stop 
             frameWidth: width,
+            // frame height, change only dragging stop 
             frameHeight: fixedRatio ? (width / rate) : height,
             dragging: false,
             maxLeft: 0,
@@ -157,7 +167,7 @@ const Cropper = React.createClass({
             height = img_height
         }
 
-        this.setState({cropLeft: left, cropTop: top, cropWidth: width, cropHeight: height})
+        this.setState({ toImgLeft4Style: left, toImgTop4Style: top, frameWidth4Style: width, frameHeight4Style: height})
     },
     
     // image onloaded hook
@@ -199,26 +209,26 @@ const Cropper = React.createClass({
             const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
             const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
             const {rate, fixedRatio} = this.props
-            const {frameWidth, frameHeight, startX, startY, toImgleft, toImgTop} = this.state
+            const {frameWidth, frameHeight, startPageX, startPageY, originX, originY} = this.state
             
             // click or touch point's offset from source image top
-            const _x = pageX - startX
-            const _y = pageY - startY
+            const _x = pageX - startPageX
+            const _y = pageY - startPageY
             
             // frame new width, height, left, top
             let _width = frameWidth + Math.abs(_x)
             let _height = fixedRatio ? (frameWidth + Math.abs(_x)) / rate : frameHeight + Math.abs(_y)
-            let _left = toImgleft
-            let _top = toImgTop
+            let _left = originX
+            let _top = originY
             
             if (_y < 0) {
                 // drag and resize to top, top changing
-                _top = fixedRatio ? toImgTop - Math.abs(_x) / rate : toImgTop - Math.abs(_y)
+                _top = fixedRatio ? originY - Math.abs(_x) / rate : originY - Math.abs(_y)
             }
 
             if (_x < 0) {
                 // drag and resize, go to left, left changing
-                _left = toImgleft + _x
+                _left = originX + _x
             }
             // calc position
             return this.calcPosition(_width, _height, _left, _top)
@@ -238,11 +248,11 @@ const Cropper = React.createClass({
 
     // frame move handler
     frameMove(e) {
-        const {originX, originY, startX, startY, frameWidth, frameHeight, maxLeft, maxTop} = this.state
+        const {originX, originY, startPageX, startPageY, frameWidth, frameHeight, maxLeft, maxTop} = this.state
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
-        let _x = pageX - startX + originX
-        let _y = pageY - startY + originY
+        let _x = pageX - startPageX + originX
+        let _y = pageY - startPageY + originY
         if (pageX < 0 || pageY < 0) return false
 
         if (_x > maxLeft) _x = maxLeft
@@ -251,7 +261,7 @@ const Cropper = React.createClass({
         this.calcPosition(frameWidth, frameHeight, _x, _y)
     },
     
-    // starting draging
+    // starting dragging
     handleDragStart(e) {
         const {allowNewSelection} = this.props
         const action = e.target.getAttribute('data-action')
@@ -261,13 +271,13 @@ const Cropper = React.createClass({
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
 
-        // if drag or move or allow new selection, change startX, startY, draging state
+        // if drag or move or allow new selection, change startPageX, startPageY, dragging state
         if (action || allowNewSelection) {
             e.preventDefault()
-            // drag start, set startX, startY for draging start point
+            // drag start, set startPageX, startPageY for dragging start point
             this.setState({
-                startX: pageX,
-                startY: pageY,
+                startPageX: pageX,
+                startPageY: pageY,
                 dragging: true,
                 action
             })
@@ -279,15 +289,15 @@ const Cropper = React.createClass({
 
             this.setState({
                 // set offset left and top of new frame 
-                toImgleft: pageX - offsetLeft,
-                toImgTop: pageY - offsetTop,
+                originX: pageX - offsetLeft,
+                originY: pageY - offsetTop,
                 frameWidth: 2,
                 frameHeight: 2,
             }, () => this.calcPosition(2, 2, pageX - offsetLeft, pageY - offsetTop) )
         }
     },
     
-    // stop draging
+    // stop dragging
     handleDragStop(e) {
         if (this.state.dragging) {
             e.preventDefault()
@@ -342,12 +352,12 @@ const Cropper = React.createClass({
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
         const {rate, fixedRatio} = this.props
-        const {startX, startY, originX, originY, frameWidth, frameHeight} = this.state
+        const {startPageX, startPageY, originX, originY, frameWidth, frameHeight} = this.state
 
         if (pageY !== 0 && pageX !== 0) {
             // current drag position offset x and y to first drag start position
-            const _x = pageX - startX
-            const _y = pageY - startY
+            const _x = pageX - startPageX
+            const _y = pageY - startPageY
             
 
             let _width = 0
@@ -482,10 +492,10 @@ const Cropper = React.createClass({
                                     dragging ? styles.dragging_frame : {}, 
                                     { 
                                         display: 'block', 
-                                        left: this.state.cropLeft, 
-                                        top: this.state.cropTop, 
-                                        width: this.state.cropWidth, 
-                                        height: this.state.cropHeight 
+                                        left: this.state.toImgLeft4Style, 
+                                        top: this.state.toImgTop4Style, 
+                                        width: this.state.frameWidth4Style, 
+                                        height: this.state.frameHeight4Style 
                                     }) } 
                             ref="frameNode">
 
@@ -496,8 +506,8 @@ const Cropper = React.createClass({
                                     style={ deepExtend({}, 
                                             styles.img, 
                                             { 
-                                                marginLeft: -this.state.cropLeft, 
-                                                marginTop: -this.state.cropTop 
+                                                marginLeft: -this.state.toImgLeft4Style, 
+                                                marginTop: -this.state.toImgTop4Style 
                                             }) }
                                     ref="cloneImg" />
                             </div>
