@@ -10,9 +10,9 @@ class Cropper extends Component {
         let {originX, originY, width, height, fixedRatio, rate, styles} = props
         this.state = {
             // background image width
-            img_width: '100%',
+            imgWidth: '100%',
             // background image height
-            img_height: 'auto',
+            imgHeight: 'auto',
             // cropper width, drag trigger changing
             frameWidth4Style: width,
             // cropper height, drag trigger changing
@@ -44,23 +44,23 @@ class Cropper extends Component {
     initStyles (){
         const container = ReactDOM.findDOMNode(this.refs.container)
         this.setState({
-            img_width: container.offsetWidth
+            imgWidth: container.offsetWidth
         }, () => {
             // calc frame width height
             let {originX, originY, disabled} = this.props
             if (disabled) return
-            const {img_width, img_height} = this.state
+            const {imgWidth, imgHeight} = this.state
             let {frameWidth, frameHeight} = this.state
 
-            const maxLeft = img_width - frameWidth
-            const maxTop = img_height - frameHeight
+            const maxLeft = imgWidth - frameWidth
+            const maxTop = imgHeight - frameHeight
 
-            if (originX + frameWidth >= img_width) {
-                originX = img_width - frameWidth
+            if (originX + frameWidth >= imgWidth) {
+                originX = imgWidth - frameWidth
                 this.setState({originX})
             }
-            if (originY + frameHeight >= img_height) {
-                originY = img_height - frameHeight
+            if (originY + frameHeight >= imgHeight) {
+                originY = imgHeight - frameHeight
                 this.setState({originY})
             }
 
@@ -124,9 +124,9 @@ class Cropper extends Component {
                 // image scaleing
                 let _heightRatio = img.offsetWidth / img.naturalWidth
                 let height = parseInt(img.naturalHeight * _heightRatio)
-                // resize img_height 
+                // resize imgHeight 
                 that.setState({
-                    img_height: height,
+                    imgHeight: height,
                     imgLoaded: true,
                 }, () => that.initStyles())
                 // before image loaded hook
@@ -142,46 +142,46 @@ class Cropper extends Component {
 
     // frame width, frame height, position left, position top
     calcPosition (width, height, left, top){
-        const {img_width, img_height} = this.state
+        const {imgWidth, imgHeight} = this.state
         const {rate, fixedRatio} = this.props
         // width < 0 or height < 0, frame invalid
         if (width < 0 || height < 0) return false
         // if ratio is fixed
         if (fixedRatio) {
             // adjust by width
-            if (width / img_width > height / img_height) {
-                if (width > img_width) {
-                    width = img_width
+            if (width / imgWidth > height / imgHeight) {
+                if (width > imgWidth) {
+                    width = imgWidth
                     left = 0
                     height = width / rate
                 }
             } else {
             // adjust by height
-                if (height > img_height) {
-                    height = img_height
+                if (height > imgHeight) {
+                    height = imgHeight
                     top = 0
                     width = height * rate
                 }
             }
         }
         // frame width plus offset left, larger than img's width
-        if (width + left > img_width) {
+        if (width + left > imgWidth) {
             if (fixedRatio) {
                 // if fixed ratio, adjust left with width
-                left = img_width - width
+                left = imgWidth - width
             } else {
                 // resize width with left
-                width = width - ((width + left) - img_width)
+                width = width - ((width + left) - imgWidth)
             }
         }
         // frame heigth plust offset top, larger than img's height
-        if (height + top > img_height) {
+        if (height + top > imgHeight) {
             if (fixedRatio) {
                 // if fixed ratio, adjust top with height
-                top = img_height - height
+                top = imgHeight - height
             } else {
                 // resize height with top
-                height = height - ((height + top) - img_height)
+                height = height - ((height + top) - imgHeight)
             }
         }
         // left is invalid
@@ -193,12 +193,12 @@ class Cropper extends Component {
             top = 0
         }
         // if frame width larger than img width
-        if (width > img_width) {
-            width = img_width
+        if (width > imgWidth) {
+            width = imgWidth
         }
         // if frame height larger than img height
-        if (height > img_height) {
-            height = img_height
+        if (height > imgHeight) {
+            height = imgHeight
         }
         this.setState({ toImgLeft4Style: left, toImgTop4Style: top, frameWidth4Style: width, frameHeight4Style: height})
     }
@@ -258,7 +258,7 @@ class Cropper extends Component {
         const {rate, fixedRatio} = this.props
         const {startPageX, startPageY, originX, originY, 
                 frameWidth4Style, frameHeight4Style,
-                frameWidth, frameHeight, img_width, img_height} = this.state
+                frameWidth, frameHeight, imgWidth, imgHeight} = this.state
 
         if (pageY !== 0 && pageX !== 0) {
             // current drag position offset x and y to first drag start position
@@ -323,8 +323,8 @@ class Cropper extends Component {
                     break
             }
             
-            if (_width > img_width || _height > img_height) {
-                if (frameWidth4Style >= img_width || frameHeight4Style >= img_height) {
+            if (_width > imgWidth || _height > imgHeight) {
+                if (frameWidth4Style >= imgWidth || frameHeight4Style >= imgHeight) {
                     return false
                 }
             }
@@ -382,11 +382,11 @@ class Cropper extends Component {
 
     // crop image
     crop(){
-        const {frameWidth, frameHeight, originX, originY, img_width} = this.state
+        const {frameWidth, frameHeight, originX, originY, imgWidth} = this.state
         let canvas = document.createElement('canvas')
         let img = ReactDOM.findDOMNode(this.refs.img)
         // crop accroding image's natural width
-        const _scale = img.naturalWidth / img_width
+        const _scale = img.naturalWidth / imgWidth
         const realFrameWidth = frameWidth * _scale
         const realFrameHeight = frameHeight * _scale
         const realOriginX = originX * _scale
@@ -401,8 +401,8 @@ class Cropper extends Component {
 
     // get current values
     values(){
-        const {frameWidth, frameHeight, originX, originY, img_width, img_height } = this.state
-        return { width: frameWidth, height: frameHeight, x: originX, y: originY, imgWidth: img_width, imgHeight: img_height }
+        const {frameWidth, frameHeight, originX, originY, imgWidth, imgHeight } = this.state
+        return { width: frameWidth, height: frameHeight, x: originX, y: originY, imgWidth, imgHeight }
     }
 
     // stop dragging
@@ -411,22 +411,25 @@ class Cropper extends Component {
             e.preventDefault()
             const frameNode = ReactDOM.findDOMNode(this.refs.frameNode)
             const {offsetLeft, offsetTop, offsetWidth, offsetHeight} = frameNode
-            const {img_width, img_height} = this.state
+            const {imgWidth, imgHeight} = this.state
             this.setState({
                 originX: offsetLeft,
                 originY: offsetTop,
                 dragging: false,
                 frameWidth: offsetWidth,
                 frameHeight: offsetHeight,
-                maxLeft: img_width - offsetWidth,
-                maxTop: img_height - offsetHeight,
+                maxLeft: imgWidth - offsetWidth,
+                maxTop: imgHeight - offsetHeight,
                 action: null
+            }, () => {
+                let {onChange} = this.props
+                if (onChange) onChange(this.values())
             })
         }
     }
 
     render() {
-        const {dragging, img_height, img_width, imgLoaded, styles} = this.state
+        const {dragging, imgHeight, imgWidth, imgLoaded, styles} = this.state
         const {src, disabled} = this.props
 
         const imageNode = <div style={styles.source} ref="sourceNode">
@@ -434,7 +437,7 @@ class Cropper extends Component {
                 src={src} ref='img'
                 style={ deepExtend({}, styles.img, styles.source_img) }
                 onLoad={this.imgOnLoad.bind(this)}
-                width={img_width} height={img_height} />
+                width={imgWidth} height={imgHeight} />
         </div>
         // disabled cropper
         if (disabled) {
@@ -443,7 +446,7 @@ class Cropper extends Component {
                             styles.container, 
                             {
                                 'position': 'relative',
-                                'height': img_height
+                                'height': imgHeight
                             })}
                     ref='container'>
                     {imageNode}
@@ -458,7 +461,7 @@ class Cropper extends Component {
                         styles.container, 
                         {
                             'position': 'relative',
-                            'height': img_height
+                            'height': imgHeight
                         }) } 
                 ref="container">
 
@@ -482,7 +485,7 @@ class Cropper extends Component {
                             {/*clone img*/}
                             <div style={styles.clone}>
                                 <img src={src} crossOrigin="anonymous"
-                                    width={img_width} height={img_height} 
+                                    width={imgWidth} height={imgHeight} 
                                     style={ deepExtend({}, 
                                             styles.img, 
                                             { 
@@ -553,6 +556,7 @@ Cropper.PropTypes = {
     styles: PropTypes.object,
     onImgLoad: PropTypes.function,
     beforeImgLoad: PropTypes.function,
+    onChange: PropTypes.function,
 }
 
 Cropper.defaultProps = {
