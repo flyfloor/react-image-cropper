@@ -101,7 +101,7 @@ const Cropper = React.createClass({
     },
 
     // frame width, frame height, position left, position top
-    calcPosition (width, height, left, top, move){
+    calcPosition (width, height, left, top){
         const {img_width, img_height} = this.state
         const {rate, fixedRatio} = this.props
         // width < 0 or height < 0, frame invalid
@@ -352,13 +352,14 @@ const Cropper = React.createClass({
         const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
         const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
         const {rate, fixedRatio} = this.props
-        const {startPageX, startPageY, originX, originY, frameWidth, frameHeight} = this.state
+        const {startPageX, startPageY, originX, originY, 
+                frameWidth4Style, frameHeight4Style,
+                frameWidth, frameHeight, img_width, img_height} = this.state
 
         if (pageY !== 0 && pageX !== 0) {
             // current drag position offset x and y to first drag start position
             const _x = pageX - startPageX
             const _y = pageY - startPageY
-            
 
             let _width = 0
             let _height = 0
@@ -417,6 +418,13 @@ const Cropper = React.createClass({
                 default:
                     break
             }
+            
+            if (_width > img_width || _height > img_height) {
+                if (frameWidth4Style >= img_width || frameHeight4Style >= img_height) {
+                    return false
+                }
+            }
+
             return this.calcPosition(_width, _height, _left, _top)
         }
     },
