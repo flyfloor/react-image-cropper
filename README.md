@@ -52,8 +52,8 @@ OPTIONS:
 | fixedRatio | turn on/off fixed ratio (bool default true) |
 | allowNewSelection | allow user to create a new selection instead of reusing initial selection (bool default true) |
 | styles | specify styles to override inline styles |
-| imageLoaded | specify fuction callback to run when the image completed loading |
-| beforeImageLoaded | specify function callback to run when the image size value is ready but image is not completed loading |
+| onImgLoad | specify fuction callback to run when the image completed loading |
+| beforeImgload | specify function callback to run when the image size value is ready but image is not completed loading |
 
 
 **[See the demo](http://braavos.me/react-image-cropper/)**
