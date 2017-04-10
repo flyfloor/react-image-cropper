@@ -4,6 +4,25 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var NODE_ENV = process.env.NODE_ENV;
 var publicPath = NODE_ENV === 'dev' ? '/dist/' : '';
 
+const plugins = [
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin(),
+    // new webpack.optimize.UglifyJsPlugin({
+    //     sourceMap: false,
+    //     mangle: false
+    // })
+]
+if (process.env.NODE_ENV !== 'dev') {
+    plugins.push(
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify("production")
+            }
+        })
+    )
+}
+
 module.exports = {
 
     entry: "./demo/demo.js",
@@ -12,20 +31,7 @@ module.exports = {
         filename: 'app.js',
         publicPath: publicPath,
     },
-    plugins: [
-        new webpack.optimize.OccurenceOrderPlugin(),
-        // new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin(),
-        new webpack.DefinePlugin({
-            "process.env": {
-                NODE_ENV: JSON.stringify(NODE_ENV)
-            }
-        }),
-        // new webpack.optimize.UglifyJsPlugin({
-        //     sourceMap: false,
-        //     mangle: false
-        // })
-    ],
+    plugins: plugins,
     module: {
         loaders: [
             { 

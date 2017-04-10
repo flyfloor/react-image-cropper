@@ -11,7 +11,7 @@ Touch supported
 Custom:
 
 + initial cropper frame position 
-+ frame width, height, rate
++ frame width, height, ratio
 + crop event
 
 ### Hot to Use
@@ -30,31 +30,29 @@ Custom:
 
 `image.src = this.refs.cropper.crop()`
 
-OPTIONS:
-- maxHeight : make sure the cropped image is not bigger than this max height
-- maxWidth : make sure the cropped image is not bigger than this max width
-
-`image.src = this.refs.cropper.crop({ maxWidth: 1024 })`
-
 + get crop values
 
 `var values = this.refs.cropper.values()`
+
++ onChange for preview
+
+(values) => onChange(values)
 
 + custom use
 
 | prop  |  value   |
 |:-------:|:--------|
-| rate | width / height |
+| ratio | width / height |
 | width | cropper frame width |
 | height | cropper frame height |
-| originX | cropper original position(x axis)|
-| originY | cropper original position(Y axis)|
-| selectionNaural | cropper frame sizes and position are relative to the image's natural size (bool default false) |
+| originX | cropper original position(x axis), accroding to image left|
+| originY | cropper original position(Y axis), accroding to image top|
 | fixedRatio | turn on/off fixed ratio (bool default true) |
 | allowNewSelection | allow user to create a new selection instead of reusing initial selection (bool default true) |
 | styles | specify styles to override inline styles |
-| imageLoaded | specify fuction callback to run when the image completed loading |
-| beforeImageLoaded | specify function callback to run when the image size value is ready but image is not completed loading |
+| onImgLoad | specify fuction callback to run when the image completed loading |
+| beforeImgload | specify function callback to run when the image size value is ready but image is not completed loading |
+| onChange | triggred when dragging stop, get values of cropper |
 
 
 **[See the demo](http://braavos.me/react-image-cropper/)**
