@@ -57,7 +57,7 @@ class ImageCropDemo extends Component {
     }
 
     render() {
-        const src = "http://braavos.me/react-image-cropper/dist/demo.jpg";
+        const src = "//braavos.me/react-image-cropper/dist/demo.jpg";
         return (
             <ul>
                 <li>
