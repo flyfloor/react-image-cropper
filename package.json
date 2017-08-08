@@ -26,8 +26,8 @@
   "peerDependencies": {
     "deep-extend": "^0.4.1",
     "prop-types": "^15.5.4",
-    "react": "^15.0.2",
-    "react-dom": "^15.0.2"
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.1.0",
