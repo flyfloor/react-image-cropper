@@ -23,7 +23,7 @@
   "author": "jerryshew",
   "license": "MIT",
   "homepage": "https://github.com",
-  "dependencies": {
+  "peerDependencies": {
     "deep-extend": "^0.4.1",
     "prop-types": "^15.5.4",
     "react": "^15.0.2",
