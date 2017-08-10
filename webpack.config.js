@@ -1,54 +1,75 @@
-var path = require('path');
 var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var publicPath = process.env.NODE_ENV === 'dev' ? '/dist/' : '';
-
-const plugins = [
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
-    // new webpack.optimize.UglifyJsPlugin({
-    //     sourceMap: false,
-    //     mangle: false
-    // })
-]
-if (process.env.NODE_ENV !== 'dev') {
-    plugins.push(
-        new webpack.DefinePlugin({
-            "process.env": {
-                NODE_ENV: JSON.stringify("production")
-            }
-        })
-    )
-}
+var path = require('path');
+var ProgressBarPlugin = require('progress-bar-webpack-plugin');
+var ForceCaseSensitivityPlugin = require('force-case-sensitivity-webpack-plugin');
+var NODE_ENV = process.env.NODE_ENV
+var publicPath = NODE_ENV === 'dev' ? '/dist/' : '';
 
 module.exports = {
-
+    plugins: [
+        new ProgressBarPlugin(),
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
+        new ForceCaseSensitivityPlugin()
+    ],
+    resolve: {
+        alias: {
+            "react": path.resolve('./node_modules/react'),
+            "react-router-dom": path.resolve('./node_modules/react-router-dom')
+        },
+    },
     entry: "./demo/demo.js",
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'app.js',
         publicPath: publicPath,
     },
-    plugins: plugins,
+
     module: {
-        loaders: [
-            { 
-                test: /\.less$/,
-                loader: "style!css!less" 
-            }, { 
+        rules: [
+            {
                 test: /\.css$/,
-                loader: "style!css" 
-            },  { 
+                use: [
+                    'style-loader',
+                    'less-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            plugins: [require('autoprefixer')]
+                        }
+                    }
+                ],
+            },
+            {
+                test: /\.less$/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            plugins: [require('autoprefixer')]
+                        }
+                    },
+                    'less-loader',
+                ],
+            },
+            {
+                test: /\.(png|jpg)$/,
+                use: 'url-loader?limit=8192&name=./image/[name].[ext]'
+            }, {
                 test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,
-                loader: "babel",
-                query: {
-                    optional: ['runtime'],
-                    stage: 0
-                }
+                use: "babel-loader",
+            }, {
+                test: /\.jsx?$/,
+                exclude: /(node_modules|bower_components)/,
+                use: 'babel-loader',
+            }, {
+                test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+                use: 'url-loader?limit=10000&name=./font/[name].[ext]'
             }
-        ]
-    },
-    
+        ],
+    }
 };
