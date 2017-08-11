@@ -585,7 +585,7 @@ Cropper.defaultProps = {
     styles: {},
     onImgLoad: function () { },
     beforeImgLoad: function () { }
-}
+};
 
 /*
 default inline styles
