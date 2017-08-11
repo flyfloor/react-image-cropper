@@ -24,10 +24,10 @@
   "license": "MIT",
   "homepage": "https://github.com",
   "dependencies": {
-    "deep-extend": "^0.4.1"
+    "deep-extend": "^0.4.1",
+    "prop-types": "^15.5.10"
   },
   "peerDependencies": {
-    "prop-types": "^15.6.0",
     "react": "^15.6.0",
     "react-dom": "^15.6.0"
   },
