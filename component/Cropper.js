@@ -798,8 +798,6 @@ let defaultStyles = {
         height: '100%',
         background: 'transparent'
     }
-
 }
-
 
 module.exports = Cropper
