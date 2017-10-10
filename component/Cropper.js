@@ -36,6 +36,7 @@ class Cropper extends Component {
             maxTop: 0,
             action: null,
             imgLoaded: false,
+            imgIsPortrait: false,
             styles: deepExtend({}, defaultStyles, styles),
         }
     }
@@ -43,9 +44,10 @@ class Cropper extends Component {
     // initialize style, component did mount or component updated.
     initStyles (){
         const container = ReactDOM.findDOMNode(this.refs.container)
-        this.setState({
-            imgWidth: container.offsetWidth
-        }, () => {
+        this.setState(this.state.imgIsPortrait
+            ? {imgHeight: container.offsetHeight}
+            : {imgWidth: container.offsetWidth}
+        , () => {
             // calc frame width height
             let {originX, originY, disabled} = this.props
             if (disabled) return
@@ -75,7 +77,6 @@ class Cropper extends Component {
                     originY: toImgTop4Style,
                 });
             })
-
         })
     }
 
@@ -127,19 +128,32 @@ class Cropper extends Component {
         setTimeout(function () {
             let img = ReactDOM.findDOMNode(that.refs.img)
             if (img && img.naturalWidth) {
-                const {beforeImgLoad} = that.props
-                
-                // image scaleing
-                let _heightRatio = img.offsetWidth / img.naturalWidth
-                let height = parseInt(img.naturalHeight * _heightRatio)
-                // resize imgHeight 
-                that.setState({
-                    imgHeight: height,
-                    imgLoaded: true,
-                }, () => that.initStyles())
+                const {beforeImgLoad, limitHeight} = that.props
+                // diside if img is a portrait
+                if (limitHeight && img.naturalHeight > img.naturalWidth) {
+                    // image scaleing
+                    let _widthRatio = limitHeight / img.naturalHeight                   
+                    let width = parseInt(img.naturalWidth * _widthRatio)
+                    //resize imgWidth
+                    that.setState({
+                        imgWidth: width,
+                        imgHeight: limitHeight,
+                        imgLoaded: true,
+                        imgIsPortrait: true,
+                    }, () => that.initStyles());
+                } else {
+                    let _heightRatio = img.offsetWidth / img.naturalWidth
+                    let height = parseInt(img.naturalHeight * _heightRatio)
+                    // resize imgHeight 
+                    that.setState({
+                        imgHeight: height,
+                        imgLoaded: true,
+                        imgIsPortrait: false,
+                    }, () => that.initStyles())
+                }
+
                 // before image loaded hook
                 beforeImgLoad()
-
             } else if (img) {
                 // catch if image naturalwidth is 0
                 that.imgGetSizeBeforeLoad()
@@ -476,10 +490,10 @@ class Cropper extends Component {
                         styles.container, 
                         {
                             'position': 'relative',
-                            'height': imgHeight
+                            'height': 'imgHeight',
+                            'width': imgWidth
                         }) } 
                 ref="container">
-
                 {imageNode}
                 {imgLoaded ?
                     <div>
@@ -565,6 +579,8 @@ Cropper.PropTypes = {
     ratio: PropTypes.number,
     width: PropTypes.number,
     height: PropTypes.number,
+    // 0 for not limiting else max-height in px
+    limitHeight: PropTypes.number,
     fixedRatio: PropTypes.bool,
     allowNewSelection: PropTypes.bool,
     disabled: PropTypes.bool,
@@ -582,6 +598,7 @@ Cropper.defaultProps = {
     ratio: 1,
     originX: 0,
     originY: 0,
+    limitHeight: 0,
     styles: {},
     onImgLoad: function () { },
     beforeImgLoad: function () { }
