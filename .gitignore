@@ -1,5 +1,5 @@
-node_modules
+.DS_Store
 .log
 npm-debug.log*
 test
-.DS_Store
+node_modules
