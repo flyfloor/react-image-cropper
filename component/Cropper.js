@@ -284,11 +284,11 @@ class Cropper extends Component {
             let _height = 0
             let _top = 0
             let _left = 0
-            // have not abstract, just calc width, height, left, top in each direction
+            // just calc width, height, left, top in each direction
             switch (dir) {
                 case 'ne':
                     _width = frameWidth + _x
-                    _height = fixedRatio ? _width / ratio : frameHeight + _y
+                    _height = fixedRatio ? _width / ratio : frameHeight - _y
                     _left = originX
                     _top = fixedRatio ? (originY - _x / ratio) : originY + _y
                     break
