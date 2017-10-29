@@ -19,7 +19,9 @@ module.exports = {
             "react-router-dom": path.resolve('./node_modules/react-router-dom')
         },
     },
-    entry: "./demo/demo.js",
+    entry: { 
+        app: ["./demo/demo.js", "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000&overlay=false"],
+    },
     output: {
         path: path.join(__dirname, 'dist'),
         filename: 'app.js',
