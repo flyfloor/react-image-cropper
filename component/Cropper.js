@@ -396,21 +396,32 @@ class Cropper extends Component {
     }
 
     // crop image
-    crop(){
+    crop(maxWidth, maxHeight){
         const {frameWidth, frameHeight, originX, originY, imgWidth} = this.state
         let canvas = document.createElement('canvas')
         let img = ReactDOM.findDOMNode(this.refs.img)
-        // crop accroding image's natural width
+        // crop accroding image's natural width        
         const _scale = img.naturalWidth / imgWidth
         const realFrameWidth = frameWidth * _scale
         const realFrameHeight = frameHeight * _scale
+        // limit img by max crop size
+        const wishedWidth = maxWidth ? Math.min(maxWidth, realFrameWidth) : realFrameWidth
+        const wishedHeight = maxHeight ? Math.min(maxHeight, realFrameHeight) : realFrameHeight
+
+        const squeezeRatio = wishedWidth / realFrameWidth
+        const flattenRatio = wishedHeight / realFrameHeight
+        const scaleRatio = Math.min(squeezeRatio, flattenRatio)
+
         const realOriginX = originX * _scale
         const realOriginY = originY * _scale
 
-        canvas.width = frameWidth
-        canvas.height = frameHeight
+        const finalWidth = realFrameWidth * scaleRatio 
+        const finalHeight = realFrameHeight * scaleRatio 
 
-        canvas.getContext("2d").drawImage(img, realOriginX, realOriginY, realFrameWidth, realFrameHeight, 0, 0, frameWidth, frameHeight)
+        canvas.width = finalWidth
+        canvas.height = finalHeight
+
+        canvas.getContext("2d").drawImage(img, realOriginX, realOriginY, realFrameWidth, realFrameHeight, 0, 0, finalWidth, finalHeight)
         return canvas.toDataURL()
     }
 

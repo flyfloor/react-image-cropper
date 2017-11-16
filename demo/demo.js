@@ -43,7 +43,6 @@ class ImageCropDemo extends Component {
     }
 
     handleChange(state, values){
-        console.log(state, values)
         this.setState({
             [state + 'Values']: values
         });
