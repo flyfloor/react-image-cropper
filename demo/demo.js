@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Css from './demo.less';
-import DemoImg from '../dist/image/demo.jpg';
 import Cropper from '../component/Cropper';
 
 
@@ -44,7 +43,6 @@ class ImageCropDemo extends Component {
     }
 
     handleChange(state, values){
-        console.log(state, values)
         this.setState({
             [state + 'Values']: values
         });
@@ -58,6 +56,7 @@ class ImageCropDemo extends Component {
     }
 
     render() {
+        const DemoImg = 'https://braavos.me/react-image-cropper/dist/image/demo.jpg'
         return (
             <ul>
                 <li>
