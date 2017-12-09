@@ -3,7 +3,7 @@ var path = require('path');
 var ProgressBarPlugin = require('progress-bar-webpack-plugin');
 var ForceCaseSensitivityPlugin = require('force-case-sensitivity-webpack-plugin');
 var NODE_ENV = process.env.NODE_ENV
-var publicPath = NODE_ENV === 'dev' ? '/dist/' : '';
+var publicPath = '/dist/';
 
 module.exports = {
     plugins: [
@@ -20,7 +20,12 @@ module.exports = {
         },
     },
     entry: { 
-        app: ["./demo/demo.js", "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000&overlay=false"],
+        app: NODE_ENV === 'dev' ? 
+                [
+                    "./demo/demo.js", 
+                    "webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000&overlay=false"
+                ]
+                : './demo/demo.js',
     },
     output: {
         path: path.join(__dirname, 'dist'),

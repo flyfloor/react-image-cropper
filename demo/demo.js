@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Css from './demo.less';
+import DemoImg from '../dist/image/demo.jpg';
 import Cropper from '../component/Cropper';
 
 
@@ -57,12 +58,11 @@ class ImageCropDemo extends Component {
     }
 
     render() {
-        const src = "demo.jpg";
         return (
             <ul>
                 <li>
                     <h3>Default image crop</h3>
-                    <Cropper src={src} ref="image" onImgLoad={() => this.handleImageLoaded('image')}/>
+                    <Cropper src={DemoImg} ref="image" onImgLoad={() => this.handleImageLoaded('image')}/>
                     <br/>
                     {this.state.imageLoaded ? <button onClick={() => this.handleClick('image')}>crop</button> : null}
                     <h4>after crop</h4>
@@ -70,7 +70,7 @@ class ImageCropDemo extends Component {
                 </li>
                 <li>
                     <h3>With given origin X and Y</h3>
-                    <Cropper src={src} originX={100} originY={100} ref="image1"
+                    <Cropper src={DemoImg} originX={100} originY={100} ref="image1"
                              onImgLoad={() => this.handleImageLoaded('image1')}/>
                     {this.state.image1Loaded ? <button onClick={() => this.handleClick('image1')}>crop</button> : null}
                     <br/>
@@ -79,7 +79,7 @@ class ImageCropDemo extends Component {
                 </li>
                 <li>
                     <h3>With given ratio</h3>
-                    <Cropper src={src} ratio={16 / 9} width={300} ref="image2"
+                    <Cropper src={DemoImg} ratio={16 / 9} width={300} ref="image2"
                              onImgLoad={() => this.handleImageLoaded('image2')}/>
                     <br/>
                     {this.state.image2Loaded ? <button onClick={() => this.handleClick('image2')}>crop</button> : null}
@@ -88,12 +88,12 @@ class ImageCropDemo extends Component {
                 </li>
                 <li>
                     <h3>Disabled</h3>
-                    <Cropper src={src} ref="image3" disabled={true}/>
+                    <Cropper src={DemoImg} ref="image3" disabled={true}/>
                 </li>
                 <li>
                     <h3>{`Variable width and height, cropper frame is relative to natural image size, don't allow new
                         selection, set custom styles`}</h3>
-                    <Cropper src={src}
+                    <Cropper src={DemoImg}
                              width={200}
                              height={500}
                              originX={200}
