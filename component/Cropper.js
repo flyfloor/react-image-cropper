@@ -42,7 +42,7 @@ class Cropper extends Component {
     
     // initialize style, component did mount or component updated.
     initStyles (){
-        const container = ReactDOM.findDOMNode(this.refs.container)
+        const container = ReactDOM.findDOMNode(this.container)
         this.setState({
             imgWidth: container.offsetWidth
         }, () => {
@@ -125,7 +125,7 @@ class Cropper extends Component {
         let that = this
         // trick way to get naturalwidth of image after component did mount
         setTimeout(function () {
-            let img = ReactDOM.findDOMNode(that.refs.img)
+            let img = ReactDOM.findDOMNode(that.img)
             if (img && img.naturalWidth) {
                 const {beforeImgLoad} = that.props
                 
@@ -382,7 +382,7 @@ class Cropper extends Component {
         }
         // if no action and allowNewSelection, then create a new frame
         if (!action && allowNewSelection) {
-            let container = ReactDOM.findDOMNode(this.refs.container)
+            let container = ReactDOM.findDOMNode(this.container)
             const {offsetLeft, offsetTop} = container
 
             this.setState({
@@ -399,7 +399,7 @@ class Cropper extends Component {
     crop(){
         const {frameWidth, frameHeight, originX, originY, imgWidth} = this.state
         let canvas = document.createElement('canvas')
-        let img = ReactDOM.findDOMNode(this.refs.img)
+        let img = ReactDOM.findDOMNode(this.img)
         // crop accroding image's natural width
         const _scale = img.naturalWidth / imgWidth
         const realFrameWidth = frameWidth * _scale
@@ -424,7 +424,7 @@ class Cropper extends Component {
     handleDragStop(e) {
         if (this.state.dragging) {
             e.preventDefault()
-            const frameNode = ReactDOM.findDOMNode(this.refs.frameNode)
+            const frameNode = ReactDOM.findDOMNode(this.frameNode)
             const {offsetLeft, offsetTop, offsetWidth, offsetHeight} = frameNode
             const {imgWidth, imgHeight} = this.state
             this.setState({
@@ -447,13 +447,15 @@ class Cropper extends Component {
         const {dragging, imgHeight, imgWidth, imgLoaded, styles} = this.state
         const {src, disabled} = this.props
 
-        const imageNode = <div style={styles.source} ref="sourceNode">
-            <img crossOrigin="anonymous"
-                src={src} ref='img'
-                style={ deepExtend({}, styles.img, styles.source_img) }
-                onLoad={this.imgOnLoad.bind(this)}
-                width={imgWidth} height={imgHeight} />
-        </div>
+        const imageNode = (
+            <div style={styles.source} ref={ref => this.sourceNode = ref}>
+                <img crossOrigin="anonymous"
+                    src={src} ref={ref => this.img = ref}
+                    style={ deepExtend({}, styles.img, styles.source_img) }
+                    onLoad={this.imgOnLoad.bind(this)}
+                    width={imgWidth} height={imgHeight} />
+            </div>
+        )
         // disabled cropper
         if (disabled) {
             return (
@@ -463,7 +465,7 @@ class Cropper extends Component {
                                 'position': 'relative',
                                 'height': imgHeight
                             })}
-                    ref='container'>
+                    ref={ref => this.container = ref}>
                     {imageNode}
                     <div style={ deepExtend({}, styles.modal, styles.modal_disabled) }></div>
                 </div>
@@ -478,7 +480,7 @@ class Cropper extends Component {
                             'position': 'relative',
                             'height': imgHeight
                         }) } 
-                ref="container">
+                ref={ref => this.container = ref}>
 
                 {imageNode}
                 {imgLoaded ?
@@ -495,7 +497,7 @@ class Cropper extends Component {
                                         width: this.state.frameWidth4Style, 
                                         height: this.state.frameHeight4Style 
                                     }) } 
-                            ref="frameNode">
+                            ref={ref => this.frameNode = ref}>
 
                             {/*clone img*/}
                             <div style={styles.clone}>
@@ -507,7 +509,7 @@ class Cropper extends Component {
                                                 marginLeft: -this.state.toImgLeft4Style, 
                                                 marginTop: -this.state.toImgTop4Style 
                                             }) }
-                                    ref="cloneImg" />
+                                    ref={ref => this.cloneImg = ref} />
                             </div>
 
                             {/*move element*/}
@@ -558,7 +560,7 @@ class Cropper extends Component {
     }
 }
 
-Cropper.PropTypes = {
+Cropper.propTypes = {
     src: PropTypes.string.isRequired,
     originX: PropTypes.number,
     originY: PropTypes.number,
@@ -569,9 +571,9 @@ Cropper.PropTypes = {
     allowNewSelection: PropTypes.bool,
     disabled: PropTypes.bool,
     styles: PropTypes.object,
-    onImgLoad: PropTypes.function,
-    beforeImgLoad: PropTypes.function,
-    onChange: PropTypes.function,
+    onImgLoad: PropTypes.func,
+    beforeImgLoad: PropTypes.func,
+    onChange: PropTypes.func,
 }
 
 Cropper.defaultProps = {
