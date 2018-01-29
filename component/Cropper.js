@@ -1,5 +1,5 @@
 const React = require('react')
-const Component = require('react').Component
+const { Component } = React
 const ReactDOM = require('react-dom')
 const deepExtend = require('deep-extend')
 const PropTypes = require('prop-types')
@@ -15,10 +15,13 @@ class Cropper extends Component {
       height,
       fixedRatio,
       ratio,
-      styles
+      styles,
+      src
     } = props
 
     this.state = {
+      // image and clone image src
+      src,
       // background image width
       imgWidth: '100%',
       // background image height
@@ -110,7 +113,19 @@ class Cropper extends Component {
 
   // props change to update frame
   componentWillReceiveProps (newProps) {
-    const {width, height, originX, originY} = this.props
+    const {
+      width,
+      height,
+      originX,
+      originY
+    } = this.props
+
+    // img src changed
+    if (this.props.src !== newProps.src) {
+      return this.setState({
+        src: newProps.src
+      }, this.imgGetSizeBeforeLoad)
+    }
 
     if (width !== newProps.width || height !== newProps.height ||
             originX !== newProps.originX || originY !== newProps.originY) {
@@ -132,11 +147,11 @@ class Cropper extends Component {
   // adjust image height when image size scaleing change, also initialize styles
   imgGetSizeBeforeLoad () {
     let that = this
-    // trick way to get naturalwidth of image after component did mount
+    // trick way to get natural width of image after component did mount
     setTimeout(function () {
       let img = findDOMNode(that.img)
       if (img && img.naturalWidth) {
-        const {beforeImgLoad} = that.props
+        const { beforeImgLoad } = that.props
 
         // image scaleing
         let _heightRatio = img.offsetWidth / img.naturalWidth
@@ -149,7 +164,7 @@ class Cropper extends Component {
         // before image loaded hook
         beforeImgLoad()
       } else if (img) {
-        // catch if image naturalwidth is 0
+        // catch if image natural width is 0
         that.imgGetSizeBeforeLoad()
       }
     }, 0)
@@ -231,9 +246,20 @@ class Cropper extends Component {
       // click or touch event
       const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
       const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
-      const {ratio, fixedRatio} = this.props
-      const {frameWidth, frameHeight, startPageX, startPageY, originX, originY} = this.state
 
+      const {
+        ratio,
+        fixedRatio
+      } = this.props
+
+      const {
+        frameWidth,
+        frameHeight,
+        startPageX,
+        startPageY,
+        originX,
+        originY
+      } = this.state
       // click or touch point's offset from source image top
       const _x = pageX - startPageX
       const _y = pageY - startPageY
@@ -406,16 +432,35 @@ class Cropper extends Component {
 
   // crop image
   crop () {
+    const img = findDOMNode(this.img)
+    let canvas = document.createElement('canvas')
+
+    const {
+      x,
+      y,
+      width,
+      height
+    } = this.values().original
+
+    canvas.width = width
+    canvas.height = height
+
+    canvas.getContext('2d').drawImage(img, x, y, width, height, 0, 0, width, height)
+    return canvas.toDataURL()
+  }
+
+  // get current values
+  values () {
+    const img = findDOMNode(this.img)
     const {
       frameWidth,
       frameHeight,
       originX,
       originY,
-      imgWidth
+      imgWidth,
+      imgHeight
     } = this.state
 
-    let canvas = document.createElement('canvas')
-    let img = findDOMNode(this.img)
     // crop accroding image's natural width
     const _scale = img.naturalWidth / imgWidth
     const realFrameWidth = frameWidth * _scale
@@ -423,31 +468,23 @@ class Cropper extends Component {
     const realOriginX = originX * _scale
     const realOriginY = originY * _scale
 
-    canvas.width = frameWidth
-    canvas.height = frameHeight
-
-    canvas.getContext('2d').drawImage(img, realOriginX, realOriginY, realFrameWidth, realFrameHeight, 0, 0, frameWidth, frameHeight)
-    return canvas.toDataURL()
-  }
-
-  // get current values
-  values () {
-    const {
-      frameWidth,
-      frameHeight,
-      originX,
-      originY,
-      imgWidth,
-      imgHeight
-    } = this.state
-
     return {
-      width: frameWidth,
-      height: frameHeight,
-      x: originX,
-      y: originY,
-      imgWidth,
-      imgHeight
+      display: {
+        width: frameWidth,
+        height: frameHeight,
+        x: originX,
+        y: originY,
+        imgWidth,
+        imgHeight
+      },
+      original: {
+        width: realFrameWidth,
+        height: realFrameHeight,
+        x: realOriginX,
+        y: realOriginY,
+        imgWidth: img.naturalWidth,
+        imgHeight: img.naturalHeight
+      }
     }
   }
 
@@ -482,10 +519,11 @@ class Cropper extends Component {
       imgHeight,
       imgWidth,
       imgLoaded,
-      styles
+      styles,
+      src
     } = this.state
+
     const {
-      src,
       disabled
     } = this.props
 
@@ -860,7 +898,7 @@ let defaultStyles = {
     bottom: 0,
     right: 0,
     opacity: 0.4,
-    backgroundColor: '#222'
+    backgroundColor: '#000'
   },
   modal_disabled: {
     backgroundColor: '#666',

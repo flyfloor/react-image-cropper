@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom'
 import './demo.less'
 import Cropper from '../component/Cropper'
 
+const DemoImg = 'https://braavos.me/images/posts/gr/8.jpg'
+
 class ImageCropDemo extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      imgSrc: DemoImg,
       image: '',
       imageLoaded: false,
       image1: '',
@@ -55,12 +58,11 @@ class ImageCropDemo extends Component {
   }
 
   render () {
-    const DemoImg = 'https://braavos.me/react-image-cropper/dist/image/demo.jpg'
     return (
       <ul>
         <li>
           <h3>Default image crop</h3>
-          <Cropper src={DemoImg}
+          <Cropper src={this.state.imgSrc}
             ref={ref => { this.image = ref }}
             onImgLoad={() => this.handleImageLoaded('image')}
           />
@@ -78,6 +80,7 @@ class ImageCropDemo extends Component {
           {
             this.state.image
               ? <img
+                className="after-img"
                 src={this.state.image}
                 alt=""
               />
@@ -87,7 +90,7 @@ class ImageCropDemo extends Component {
         <li>
           <h3>With given origin X and Y</h3>
           <Cropper
-            src={DemoImg}
+            src={this.state.imgSrc}
             originX={100}
             originY={100}
             ref={ref => { this.image1 = ref }}
@@ -108,6 +111,7 @@ class ImageCropDemo extends Component {
           {
             this.state.image1
               ? <img
+                className="after-img"
                 src={this.state.image1}
                 alt=""
               />
@@ -117,7 +121,7 @@ class ImageCropDemo extends Component {
         <li>
           <h3>With given ratio</h3>
           <Cropper
-            src={DemoImg}
+            src={this.state.imgSrc}
             ratio={16 / 9}
             width={300}
             ref={ref => { this.image2 = ref }}
@@ -137,6 +141,7 @@ class ImageCropDemo extends Component {
           {
             this.state.image2
               ? <img
+                className="after-img"
                 src={this.state.image2}
                 alt=""
               />
@@ -146,7 +151,7 @@ class ImageCropDemo extends Component {
         <li>
           <h3>Disabled</h3>
           <Cropper
-            src={DemoImg}
+            src={this.state.imgSrc}
             ref={ref => { this.image3 = ref }}
             disabled
           />
@@ -155,7 +160,7 @@ class ImageCropDemo extends Component {
           <h3>{`Variable width and height, cropper frame is relative to natural image size, don't allow new
                         selection, set custom styles`}</h3>
           <Cropper
-            src={DemoImg}
+            src={this.state.imgSrc}
             width={200}
             height={500}
             originX={200}
@@ -199,7 +204,15 @@ class ImageCropDemo extends Component {
           <h4>values</h4>
           {
             this.state.image4Values
-              ? <p>{JSON.stringify(this.state.image4Values)}</p>
+              ? <pre
+                style={{
+                  padding: '10px',
+                  backgroundColor: '#eee',
+                  overflow: 'scroll'
+                }}
+              >
+                {JSON.stringify(this.state.image4Values)}
+              </pre>
               : null
           }
           {
@@ -215,6 +228,7 @@ class ImageCropDemo extends Component {
           {
             this.state.image4
               ? <img
+                className="after-img"
                 src={this.state.image4}
                 alt=""
               />

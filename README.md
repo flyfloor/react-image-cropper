@@ -23,16 +23,45 @@ Custom:
 + define Cropper with src, and ref to execute crop method  
 
 ```
-<Cropper src="http://braavos.me/images/posts/college-rock/the-smiths.png" ref="cropper"/>
+<Cropper 
+    src="http://braavos.me/images/posts/college-rock/the-smiths.png" 
+    ref={ ref => { this.cropper = ref }}
+/>
 ```
 
 + crop and get image url
 
-`image.src = this.refs.cropper.crop()`
+`image.src = this.cropper.crop()`
 
-+ get crop values
++ get crop values:
 
-`var values = this.refs.cropper.values()`
+`const values = this.cropper.values()`
+
+values: 
+
+```
+{
+    // display values
+    display: {
+        width, // frame width
+        height, // frame height
+        x, // original x position
+        y, // original y position
+        imgWidth, // img width
+        imgHeight, // img height
+    },
+    // original values
+    original: {
+        width, // frame width
+        height, // frame height
+        x, // original x position
+        y, // original y position
+        imgWidth, // img width
+        imgHeight, // img height
+    }
+}
+```
+
 
 + onChange for preview
 
