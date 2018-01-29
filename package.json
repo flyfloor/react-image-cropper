@@ -7,7 +7,8 @@
     "start": "npm-run-all --parallel babel server",
     "server": "cross-env NODE_ENV=dev node server.js",
     "babel": "babel --presets es2015,react --watch component/ --out-dir lib/",
-    "build": "webpack -p"
+    "build": "webpack -p",
+    "lint": "./node_modules/.bin/eslint ./component"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,9 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "devDependencies": {
     "autoprefixer": "^7.1.1",
     "babel-cli": "^6.18.0",
@@ -42,7 +46,13 @@
     "babel-runtime": "^6.0.0",
     "cross-env": "^3.1.3",
     "css-loader": "^0.28.4",
-    "eslint": "^2.13.1",
+    "eslint": "^4.16.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-react": "^7.6.1",
+    "eslint-plugin-standard": "^3.0.1",
     "express": "^4.13.3",
     "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.8.5",
@@ -51,6 +61,7 @@
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
     "postcss-loader": "^2.0.6",
+    "pre-commit": "^1.2.2",
     "progress-bar-webpack-plugin": "^1.9.3",
     "react-transform-hmr": "^1.0.0",
     "style-loader": "^0.12.3",
