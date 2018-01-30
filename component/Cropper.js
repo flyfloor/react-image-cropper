@@ -8,7 +8,7 @@ const { findDOMNode } = ReactDOM
 class Cropper extends Component {
   constructor (props) {
     super(props)
-    let {
+    const {
       originX,
       originY,
       width,
@@ -60,27 +60,52 @@ class Cropper extends Component {
       imgWidth: container.offsetWidth
     }, () => {
       // calc frame width height
-      let {originX, originY, disabled} = this.props
+      let {
+        originX,
+        originY,
+        disabled
+      } = this.props
+
       if (disabled) return
-      const {imgWidth, imgHeight} = this.state
-      let {frameWidth, frameHeight} = this.state
+
+      const {
+        imgWidth,
+        imgHeight
+      } = this.state
+      let {
+        frameWidth,
+        frameHeight
+      } = this.state
 
       const maxLeft = imgWidth - frameWidth
       const maxTop = imgHeight - frameHeight
 
       if (originX + frameWidth >= imgWidth) {
         originX = imgWidth - frameWidth
-        this.setState({originX})
+        this.setState({
+          originX
+        })
       }
       if (originY + frameHeight >= imgHeight) {
         originY = imgHeight - frameHeight
-        this.setState({originY})
+        this.setState({
+          originY
+        })
       }
 
-      this.setState({maxLeft, maxTop})
+      this.setState({
+        maxLeft,
+        maxTop
+      })
       // calc clone position
       this.calcPosition(frameWidth, frameHeight, originX, originY, () => {
-        const {frameWidth4Style, frameHeight4Style, toImgTop4Style, toImgLeft4Style} = this.state
+        const {
+          frameWidth4Style,
+          frameHeight4Style,
+          toImgTop4Style,
+          toImgLeft4Style
+        } = this.state
+
         this.setState({
           frameWidth: frameWidth4Style,
           frameHeight: frameHeight4Style,
@@ -95,10 +120,8 @@ class Cropper extends Component {
     // event
     document.addEventListener('mousemove', this.handleDrag.bind(this))
     document.addEventListener('touchmove', this.handleDrag.bind(this))
-
     document.addEventListener('mouseup', this.handleDragStop.bind(this))
     document.addEventListener('touchend', this.handleDragStop.bind(this))
-
     this.imgGetSizeBeforeLoad()
   }
 
@@ -106,7 +129,6 @@ class Cropper extends Component {
     // remove event
     document.removeEventListener('mousemove', this.handleDrag.bind(this))
     document.removeEventListener('touchmove', this.handleDrag.bind(this))
-
     document.removeEventListener('mouseup', this.handleDragStop.bind(this))
     document.removeEventListener('touchend', this.handleDragStop.bind(this))
   }
@@ -127,8 +149,10 @@ class Cropper extends Component {
       }, this.imgGetSizeBeforeLoad)
     }
 
-    if (width !== newProps.width || height !== newProps.height ||
-            originX !== newProps.originX || originY !== newProps.originY) {
+    if (width !== newProps.width ||
+      height !== newProps.height ||
+      originX !== newProps.originX ||
+      originY !== newProps.originY) {
       // update frame
       this.setState({
         frameWidth: newProps.width,
@@ -146,34 +170,36 @@ class Cropper extends Component {
 
   // adjust image height when image size scaleing change, also initialize styles
   imgGetSizeBeforeLoad () {
-    let that = this
     // trick way to get natural width of image after component did mount
-    setTimeout(function () {
-      let img = findDOMNode(that.img)
+    setTimeout(() => {
+      const img = findDOMNode(this.img)
       if (img && img.naturalWidth) {
-        const { beforeImgLoad } = that.props
-
         // image scaleing
-        let _heightRatio = img.offsetWidth / img.naturalWidth
-        let height = parseInt(img.naturalHeight * _heightRatio)
+        const imgHeight = parseInt(img.offsetWidth / img.naturalWidth * img.naturalHeight)
         // resize imgHeight
-        that.setState({
-          imgHeight: height,
+        this.setState({
+          imgHeight,
           imgLoaded: true
-        }, () => that.initStyles())
+        }, this.initStyles)
         // before image loaded hook
-        beforeImgLoad()
+        this.props.beforeImgLoad()
       } else if (img) {
         // catch if image natural width is 0
-        that.imgGetSizeBeforeLoad()
+        this.imgGetSizeBeforeLoad()
       }
     }, 0)
   }
 
   // frame width, frame height, position left, position top
   calcPosition (width, height, left, top, callback) {
-    const {imgWidth, imgHeight} = this.state
-    const {ratio, fixedRatio} = this.props
+    const {
+      imgWidth,
+      imgHeight
+    } = this.state
+    const {
+      ratio,
+      fixedRatio
+    } = this.props
     // width < 0 or height < 0, frame invalid
     if (width < 0 || height < 0) return false
     // if ratio is fixed
@@ -244,8 +270,10 @@ class Cropper extends Component {
   createNewFrame (e) {
     if (this.state.dragging) {
       // click or touch event
-      const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
-      const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
+      const {
+        pageX,
+        pageY
+      } = e.pageX ? e : e.targetTouches[0]
 
       const {
         ratio,
@@ -265,8 +293,8 @@ class Cropper extends Component {
       const _y = pageY - startPageY
 
       // frame new width, height, left, top
-      let _width = frameWidth + Math.abs(_x)
-      let _height = fixedRatio ? (frameWidth + Math.abs(_x)) / ratio : frameHeight + Math.abs(_y)
+      const _width = frameWidth + Math.abs(_x)
+      const _height = fixedRatio ? (frameWidth + Math.abs(_x)) / ratio : frameHeight + Math.abs(_y)
       let _left = originX
       let _top = originY
 
@@ -286,9 +314,22 @@ class Cropper extends Component {
 
   // frame move handler
   frameMove (e) {
-    const {originX, originY, startPageX, startPageY, frameWidth, frameHeight, maxLeft, maxTop} = this.state
-    const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
-    const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
+    const {
+      originX,
+      originY,
+      startPageX,
+      startPageY,
+      frameWidth,
+      frameHeight,
+      maxLeft,
+      maxTop
+    } = this.state
+
+    const {
+      pageX,
+      pageY
+    } = e.pageX ? e : e.targetTouches[0]
+
     let _x = pageX - startPageX + originX
     let _y = pageY - startPageY + originY
     if (pageX < 0 || pageY < 0) return false
@@ -301,12 +342,28 @@ class Cropper extends Component {
 
   // drag dot to different direction
   frameDotMove (dir, e) {
-    const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
-    const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
-    const {ratio, fixedRatio} = this.props
-    const {startPageX, startPageY, originX, originY,
-      frameWidth4Style, frameHeight4Style,
-      frameWidth, frameHeight, imgWidth, imgHeight} = this.state
+    const {
+      pageX,
+      pageY
+    } = e.pageX ? e : e.targetTouches[0]
+
+    const {
+      ratio,
+      fixedRatio
+    } = this.props
+
+    const {
+      startPageX,
+      startPageY,
+      originX,
+      originY,
+      frameWidth4Style,
+      frameHeight4Style,
+      frameWidth,
+      frameHeight,
+      imgWidth,
+      imgHeight
+    } = this.state
 
     if (pageY !== 0 && pageX !== 0) {
       // current drag position offset x and y to first drag start position
@@ -385,7 +442,10 @@ class Cropper extends Component {
   handleDrag (e) {
     if (this.state.dragging) {
       e.preventDefault()
-      let {action} = this.state
+      const {
+        action
+      } = this.state
+
       if (!action) return this.createNewFrame(e)
       if (action === 'move') return this.frameMove(e)
       this.frameDotMove(action, e)
@@ -394,13 +454,18 @@ class Cropper extends Component {
 
   // starting dragging
   handleDragStart (e) {
-    const {allowNewSelection} = this.props
+    const {
+      allowNewSelection
+    } = this.props
+
     const action = e.target.getAttribute('data-action')
       ? e.target.getAttribute('data-action')
       : e.target.parentNode.getAttribute('data-action')
 
-    const pageX = e.pageX ? e.pageX : e.targetTouches[0].pageX
-    const pageY = e.pageY ? e.pageY : e.targetTouches[0].pageY
+    const {
+      pageX,
+      pageY
+    } = e.pageX ? e : e.targetTouches[0]
 
     // if drag or move or allow new selection, change startPageX, startPageY, dragging state
     if (action || allowNewSelection) {
@@ -415,11 +480,12 @@ class Cropper extends Component {
     }
     // if no action and allowNewSelection, then create a new frame
     if (!action && allowNewSelection) {
-      let container = findDOMNode(this.container)
+      const container = findDOMNode(this.container)
       const {
         offsetLeft,
         offsetTop
       } = container
+
       this.setState({
         // set offset left and top of new frame
         originX: pageX - offsetLeft,
@@ -434,7 +500,6 @@ class Cropper extends Component {
   crop () {
     const img = findDOMNode(this.img)
     let canvas = document.createElement('canvas')
-
     const {
       x,
       y,
@@ -444,7 +509,6 @@ class Cropper extends Component {
 
     canvas.width = width
     canvas.height = height
-
     canvas.getContext('2d').drawImage(img, x, y, width, height, 0, 0, width, height)
     return canvas.toDataURL()
   }
@@ -492,9 +556,19 @@ class Cropper extends Component {
   handleDragStop (e) {
     if (this.state.dragging) {
       e.preventDefault()
-      const frameNode = findDOMNode(this.frameNode)
-      const {offsetLeft, offsetTop, offsetWidth, offsetHeight} = frameNode
-      const {imgWidth, imgHeight} = this.state
+
+      const {
+        offsetLeft,
+        offsetTop,
+        offsetWidth,
+        offsetHeight
+      } = findDOMNode(this.frameNode)
+
+      const {
+        imgWidth,
+        imgHeight
+      } = this.state
+
       this.setState({
         originX: offsetLeft,
         originY: offsetTop,
@@ -505,9 +579,7 @@ class Cropper extends Component {
         maxTop: imgHeight - offsetHeight,
         action: null
       }, () => {
-        const {
-          onChange
-        } = this.props
+        const { onChange } = this.props
         if (onChange) onChange(this.values())
       })
     }
@@ -523,9 +595,7 @@ class Cropper extends Component {
       src
     } = this.state
 
-    const {
-      disabled
-    } = this.props
+    const { disabled } = this.props
 
     const imageNode = (
       <div
@@ -581,8 +651,7 @@ class Cropper extends Component {
         onTouchStart={this.handleDragStart.bind(this)}
         style={
           deepExtend({},
-            styles.container,
-            {
+            styles.container, {
               'position': 'relative',
               'height': imgHeight
             }
@@ -603,11 +672,9 @@ class Cropper extends Component {
               {/* frame container */}
               <div
                 style={
-                  deepExtend(
-                    {},
+                  deepExtend({},
                     styles.frame,
-                    dragging ? styles.dragging_frame : {},
-                    {
+                    dragging ? styles.dragging_frame : {}, {
                       display: 'block',
                       left: this.state.toImgLeft4Style,
                       top: this.state.toImgTop4Style,
@@ -630,12 +697,10 @@ class Cropper extends Component {
                     width={imgWidth}
                     height={imgHeight}
                     style={
-                      deepExtend(
-                        {},
-                        styles.img,
-                        {
-                          marginLeft: -this.state.toImgLeft4Style,
-                          marginTop: -this.state.toImgTop4Style
+                      deepExtend({},
+                        styles.img, {
+                          marginLeft: -1 * this.state.toImgLeft4Style,
+                          marginTop: -1 * this.state.toImgTop4Style
                         }
                       )
                     }
@@ -647,16 +712,16 @@ class Cropper extends Component {
 
                 {/* move element */}
                 <span
-                  style={ styles.move }
                   data-action='move'
+                  style={styles.move}
                 >
                 </span>
                 {/* move center element */}
                 <span
+                  data-action='move'
                   style={
                     deepExtend({}, styles.dot, styles.dotCenter)
                   }
-                  data-action='move'
                 >
                   <span
                     style={
@@ -674,10 +739,10 @@ class Cropper extends Component {
 
                 {/* frame dot elements */}
                 <span
+                  data-action="ne"
                   style={
                     deepExtend({}, styles.dot, styles.dotNE)
                   }
-                  data-action="ne"
                 >
                   <span
                     style={
@@ -687,10 +752,10 @@ class Cropper extends Component {
                   </span>
                 </span>
                 <span
+                  data-action="n"
                   style={
                     deepExtend({}, styles.dot, styles.dotN)
                   }
-                  data-action="n"
                 >
                   <span
                     style={
@@ -700,10 +765,10 @@ class Cropper extends Component {
                   </span>
                 </span>
                 <span
+                  data-action="nw"
                   style={
                     deepExtend({}, styles.dot, styles.dotNW)
                   }
-                  data-action="nw"
                 >
                   <span
                     style={
@@ -713,10 +778,10 @@ class Cropper extends Component {
                   </span>
                 </span>
                 <span
+                  data-action="e"
                   style={
                     deepExtend({}, styles.dot, styles.dotE)
                   }
-                  data-action="e"
                 >
                   <span
                     style={
@@ -726,10 +791,10 @@ class Cropper extends Component {
                   </span>
                 </span>
                 <span
+                  data-action="w"
                   style={
                     deepExtend({}, styles.dot, styles.dotW)
                   }
-                  data-action="w"
                 >
                   <span
                     style={
@@ -739,10 +804,10 @@ class Cropper extends Component {
                   </span>
                 </span>
                 <span
+                  data-action="se"
                   style={
                     deepExtend({}, styles.dot, styles.dotSE)
                   }
-                  data-action="se"
                 >
                   <span
                     style={
@@ -752,10 +817,10 @@ class Cropper extends Component {
                   </span>
                 </span>
                 <span
+                  data-action="s"
                   style={
                     deepExtend({}, styles.dot, styles.dotS)
                   }
-                  data-action="s"
                 >
                   <span
                     style={
@@ -765,10 +830,10 @@ class Cropper extends Component {
                   </span>
                 </span>
                 <span
+                  data-action="sw"
                   style={
                     deepExtend({}, styles.dot, styles.dotSW)
                   }
-                  data-action="sw"
                 >
                   <span
                     style={
@@ -780,31 +845,31 @@ class Cropper extends Component {
 
                 {/* frame line elements */}
                 <span
+                  data-action="n"
                   style={
                     deepExtend({}, styles.line, styles.lineN)
                   }
-                  data-action="n"
                 >
                 </span>
                 <span
+                  data-action="s"
                   style={
                     deepExtend({}, styles.line, styles.lineS)
                   }
-                  data-action="s"
                 >
                 </span>
                 <span
+                  data-action="w"
                   style={
                     deepExtend({}, styles.line, styles.lineW)
                   }
-                  data-action="w"
                 >
                 </span>
                 <span
+                  data-action="e"
                   style={
                     deepExtend({}, styles.line, styles.lineE)
                   }
-                  data-action="e"
                 >
                 </span>
               </div>
@@ -841,14 +906,14 @@ Cropper.defaultProps = {
   originX: 0,
   originY: 0,
   styles: {},
-  onImgLoad: function () { },
-  beforeImgLoad: function () { }
+  onImgLoad: function () {},
+  beforeImgLoad: function () {}
 }
 
 /*
 default inline styles
 */
-let defaultStyles = {
+const defaultStyles = {
   container: {},
   img: {
     userDrag: 'none',
@@ -1056,7 +1121,6 @@ let defaultStyles = {
     height: '100%',
     background: 'transparent'
   }
-
 }
 
 module.exports = Cropper
