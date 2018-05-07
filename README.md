@@ -1,3 +1,7 @@
+
+# collaborators wanted
+I have barely no time work on improve this project, needs collaborators for project maintenance.
+
 ## React Image Cropper
 
 [![Downloads](https://img.shields.io/npm/dt/react-image-cropper.svg)](https://www.npmjs.com/package/react-image-cropper)
