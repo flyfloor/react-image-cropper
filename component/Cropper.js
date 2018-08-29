@@ -496,10 +496,10 @@ class Cropper extends Component {
     }
   }
 
-  // crop image
-  crop () {
+  // get cropped canvas
+  getCroppedCanvas () {
     const img = findDOMNode(this.img)
-    let canvas = document.createElement('canvas')
+    const canvas = document.createElement('canvas')
     const {
       x,
       y,
@@ -510,6 +510,13 @@ class Cropper extends Component {
     canvas.width = width
     canvas.height = height
     canvas.getContext('2d').drawImage(img, x, y, width, height, 0, 0, width, height)
+    return canvas
+  }
+
+  // crop image
+  crop () {
+    const canvas = this.getCroppedCanvas()
+
     return canvas.toDataURL()
   }
 
