@@ -18,7 +18,7 @@ Custom:
 + frame width, height, ratio
 + crop event
 
-### Hot to Use
+### How to Use
 
 + `import {Cropper} from 'react-image-cropper'`
 
