@@ -78,8 +78,8 @@ values:
 | ratio | width / height |
 | width | cropper frame width |
 | height | cropper frame height |
-| originX | cropper original position(x axis), accroding to image left|
-| originY | cropper original position(Y axis), accroding to image top|
+| originX | cropper original position(x axis), accroding to image left |
+| originY | cropper original position(Y axis), accroding to image top |
 | fixedRatio | turn on/off fixed ratio (bool default true) |
 | allowNewSelection | allow user to create a new selection instead of reusing initial selection (bool default true) |
 | styles | specify styles to override inline styles |
