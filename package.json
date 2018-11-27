@@ -4,7 +4,7 @@
   "description": "react image crop",
   "main": "app.js",
   "scripts": {
-    "start": "npm-run-all --parallel babel server",
+    "start": "concurrently \"npm run babel\" \"npm run server\"",
     "server": "cross-env NODE_ENV=dev node server.js",
     "babel": "babel --presets es2015,react --watch component/ --out-dir lib/",
     "build": "webpack -p",
@@ -34,7 +34,7 @@
     "lint"
   ],
   "devDependencies": {
-    "npm-run-all": "^4.1.1",
+    "concurrently": "^4.1.0",
     "autoprefixer": "^7.1.1",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
