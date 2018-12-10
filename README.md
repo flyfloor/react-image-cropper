@@ -18,7 +18,7 @@ Custom:
 + frame width, height, ratio
 + crop event
 
-### Hot to Use
+### How to Use
 
 + `import {Cropper} from 'react-image-cropper'`
 
@@ -73,19 +73,19 @@ values:
 
 + custom use
 
-| prop  |  value   |
-|:-------:|:--------|
-| ratio | width / height |
-| width | cropper frame width |
-| height | cropper frame height |
-| originX | cropper original position(x axis), accroding to image left|
-| originY | cropper original position(Y axis), accroding to image top|
-| fixedRatio | turn on/off fixed ratio (bool default true) |
-| allowNewSelection | allow user to create a new selection instead of reusing initial selection (bool default true) |
-| styles | specify styles to override inline styles |
-| onImgLoad | specify fuction callback to run when the image completed loading |
-| beforeImgload | specify function callback to run when the image size value is ready but image is not completed loading |
-| onChange | triggred when dragging stop, get values of cropper |
+|        prop       | value                                                                                                  |
+|:-----------------:|--------------------------------------------------------------------------------------------------------|
+|       ratio       | width / height                                                                                         |
+|       width       | cropper frame width                                                                                    |
+|       height      | cropper frame height                                                                                   |
+|      originX      | cropper original position(x axis), accroding to image left                                             |
+|      originY      | cropper original position(Y axis), accroding to image top                                              |
+|     fixedRatio    | turn on/off fixed ratio (bool default true)                                                            |
+| allowNewSelection | allow user to create a new selection instead of reusing initial selection (bool default true)          |
+|       styles      | specify styles to override inline styles                                                               |
+|     onImgLoad     | specify fuction callback to run when the image completed loading                                       |
+|   beforeImgload   | specify function callback to run when the image size value is ready but image is not completed loading |
+|      onChange     | triggred when dragging stop, get values of cropper                                                     |
 
 
 **[See the demo](http://braavos.me/react-image-cropper/)**
