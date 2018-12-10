@@ -1,5 +1,5 @@
 
-# collaborators wanted
+# Collaborators Wanted
 I have barely no time work on improve this project, needs collaborators for project maintenance.
 
 ## React Image Cropper
