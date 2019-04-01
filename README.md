@@ -4,13 +4,20 @@ I have barely no time work on improve this project, needs collaborators for proj
 
 ## React Image Cropper
 
+<p align="center">
+  <a href="https://bit.dev/jerryshew/react-image-cropper/cropper"><img src="https://i.imagesup.co/images2/390634128b8f5ee290e95f897f207684f155280d.jpg"></a>
+</p>
+
 [![Downloads](https://img.shields.io/npm/dt/react-image-cropper.svg)](https://www.npmjs.com/package/react-image-cropper)
 [![Version](https://img.shields.io/npm/v/react-image-cropper.svg)](https://www.npmjs.com/package/react-image-cropper)
 
 A React.JS Image Cropper
 Touch supported
 
-**[See the demo](http://braavos.me/react-image-cropper/)**
+**[See the demo](http://braavos.me/react-image-cropper/)**  
+
+**[Live playground and npm/yarn/bit installation](https://bit.dev/jerryshew/react-image-cropper/cropper)**  
+
 
 Custom:
 
