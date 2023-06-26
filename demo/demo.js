@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import './demo.less'
 import Cropper from '../component/Cropper'
 
-const DemoImg = 'https://braavos.me/images/posts/gr/8.jpg'
+const DemoImg = 'https://wallpaper-mania.com/wp-content/uploads/2018/09/High_resolution_wallpaper_background_ID_77701347521.jpg'
 
 class ImageCropDemo extends Component {
   constructor (props) {

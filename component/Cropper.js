@@ -51,8 +51,9 @@ class Cropper extends Component {
       imgLoaded: false,
       styles: deepExtend({}, defaultStyles, styles)
     }
+    this.pageDirection = document.body.dir;
+    this.isRTL = this.pageDirection === 'rtl';
   }
-
   // initialize style, component did mount or component updated.
   initStyles () {
     const container = findDOMNode(this.container)
@@ -332,6 +333,7 @@ class Cropper extends Component {
 
     let _x = pageX - startPageX + originX
     let _y = pageY - startPageY + originY
+    if (this.isRTL) _x = -1 * _x;
     if (pageX < 0 || pageY < 0) return false
 
     if (_x > maxLeft) _x = maxLeft
@@ -485,7 +487,6 @@ class Cropper extends Component {
         offsetLeft,
         offsetTop
       } = container
-
       this.setState({
         // set offset left and top of new frame
         originX: pageX - offsetLeft,
@@ -568,7 +569,6 @@ class Cropper extends Component {
         imgWidth,
         imgHeight
       } = this.state
-
       this.setState({
         originX: offsetLeft,
         originY: offsetTop,
@@ -676,7 +676,7 @@ class Cropper extends Component {
                     styles.frame,
                     dragging ? styles.dragging_frame : {}, {
                       display: 'block',
-                      left: this.state.toImgLeft4Style,
+                      [this.isRTL ? 'right' : 'left']: this.state.toImgLeft4Style,
                       top: this.state.toImgTop4Style,
                       width: this.state.frameWidth4Style,
                       height: this.state.frameHeight4Style
@@ -699,7 +699,7 @@ class Cropper extends Component {
                     style={
                       deepExtend({},
                         styles.img, {
-                          marginLeft: -1 * this.state.toImgLeft4Style,
+                          [this.isRTL ? 'marginRight' : 'marginLeft']: -1 * this.state.toImgLeft4Style,
                           marginTop: -1 * this.state.toImgTop4Style
                         }
                       )
